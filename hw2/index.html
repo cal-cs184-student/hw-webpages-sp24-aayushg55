@@ -1,7 +1,376 @@
+
+<!DOCTYPE HTML>
 <html>
-	<head>
-	</head>
-	<body>
-		Homework 2 index.html here
-	</body>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
+
+	<link rel="stylesheet" href="./../css/animate.css">
+	<link rel="stylesheet" href="./../css/icomoon.css">
+	<link rel="stylesheet" href="./../css/bootstrap.css">
+	<link rel="stylesheet" href="./../css/style.css">
+	<link rel="stylesheet" href="./../css/syntax.css">
+
+	<script type="text/javascript" async
+	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+	</script>
+
+
+	<!-- Modernizr JS -->
+	<script src="../js/modernizr-2.6.2.min.js"></script>
+	<title>CS 184 Mesh Editor</title>
+
+</head>
+
+<body>
+
+<div id="colorlib-page">
+
+<div id="colorlib-main">   
+<div id="colorlib-post">
+
+	<h1 class="post-title" style="text-align: center">
+		<a href="https://cal-cs184-student.github.io/hw-webpages-sp24-aayushg55/hw1/index.html">Project 2: Mesh Editor</a>
+	</h1>
+
+	<h3 style="text-align: center">         
+		CS 184: Computer Graphics and Imaging, Spring 2024
+	</h3>  
+
+	<h4 style="text-align: center">         
+		Aayush Gupta
+	</h4>         
+
+	<p><img src="./images/cow_nobg.png"  alt="" style="width: 35%; display: block; margin-left: auto; margin-right: auto;" /></p>
+<div>
+	<h2 id="overview">Overview</h2>
+
+	<p>
+		In this project, I implemented a pipeline to model and manipulate meshes. In particular, I modeled Bezier curves and surfaces using the de Casteljau algorithm and implemented elementary mesh operations (edge-flips, edge-splits, and upsampling) using the half-edge data structure.
+	</p>
+
+	<p>This project gave me insight into how objects are geometrically modeled through meshes, which are a crucial aspect of computer graphics. I also solidified my understanding of Bezier curves/surfaces and became fluent in using the half-edge data structure.
+	</p>
+</div>
+<br>
+<div>
+	<h2 id="Section-1-Bezier-Curves-and-Surfaces">Section I: Bezier Curves and Surfaces</h2>
+
+	<h3 id="Part-1-Bezier-Curves">Part 1: Bezier Curves with 1D de Casteljau Subdivision</h3>
+	
+	<p>A Bezier curve of degree <script type="math/tex">n</script> is defined by  <script type="math/tex">n-1</script> control points and parameterized by a scalar parameter <em>t</em>, which ranges from 0 to 1. Given a list of <script type="math/tex">n</script> control points <script type="math/tex">p_{1},...,p_{n}</script>, I implemented the subroutine <code>BezierCurve::evaluateStep(...)</code> to get the next <script type="math/tex">n-1</script> intermediate control points <script type="math/tex">p_{1}^\prime,...,p_{n-1}^\prime</script> for a particular value of <em>t</em> by linearly interpolating between points pairwise as follows: 	
+	<p>
+		<img src="./images/part_1/lerp.jpg"  alt="" style="width: 45%; display: block; margin-left: auto; margin-right: auto;" />
+	</p> 
+	Applying this step recursively <script type="math/tex">n-1</script> times, we arrive at a single point on the curve corresponding to the value of <em>t</em>. Repeating this for different values of <em>t</em> gives us all of the points on the Bezier curve. 
+	
+	</p>
+	<p>
+		The set of 6 images below depicts this recursive process. The white points depict the initial control points and the blue points represent the interpolated points. The red point corresponds to the final evaluated point that lies on the Bezier curve for a particular value of <em>t</em>. The final image shows the curve in green formed by performing this process for all possible <em>t</em> from 0 to 1.
+	</p>
+
+
+
+	<div>
+		<div class="carousel-non-resize">
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_0.jpg" style="width:100%" />
+				<p>Iter 0</p>
+			</div>
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_1.jpg" style="width:100%" />
+				<p>Iter 1</p>
+			</div>
+		</div>
+		<div class="carousel-non-resize">
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_2.jpg" style="width:100%" />
+				<p>Iter 2</p>
+			</div>
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_3.jpg" style="width:100%" />
+				<p>Iter 3</p>
+			</div>
+		</div>
+		<div class="carousel-non-resize">
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_4.jpg" style="width:100%" />
+				<p>Iter 4</p>
+			</div>
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_5.jpg" style="width:100%" />
+				<p>Iter 5</p>
+			</div>
+		</div>
+		<div class="carousel-non-resize">
+			<div class="carousel-col2">
+				<img src="./images/part_1/step_6.jpg" style="width:70%" />
+				<p>Final Curve</p>
+			</div>
+		</div>
+		<div class="carousel-non-resize">
+			<div class="carousel-col2">
+				<img src="./images/part_1/diff.jpg" style="width:70%" />
+				<p>A curve created by different control points and visualized with a different <em>t</em></p>
+			</div>
+		</div>
+	</div>
+
+	<p>The above screenshot depicts a Bezier curve created using a different set of control points.</p>
+	
+</div>
+<br>
+<div>
+	<h3 id="part-2-bezier-surfaces">Part 2: Bezier Surfaces with Separable 1D de Casteljau</h3>
+
+	<p>The de Casteljau algorithm can be extended to Bezier surfaces by applying the algorithm twice on the grid of control points -- first in the row direction and then in the column direction using the points yielded from each row. In particular, for any pair of scalar parameters <script type="math/tex">(u,v)</script> ranging between 0 and 1, we first execute the 1D de Casteljau algorithm from Part 1 along the rows of the <script type="math/tex">n \times n</script> grid of control points, resulting in a set of <script type="math/tex">n</script> Bezier curves evaluated at <em>u</em>. This new set of points defines a Bezier curve parameterized by <em>v</em>, and so the algorithm can be reapplied on these points using the parameter <em>v</em> to yield a single point on the Bezier surface.
+
+	<p>Below are some examples of Bezier curves evaluated by my implementation</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_2/teapot.jpg" style="width:100%" />
+			<p><code>teapot.bez</code></p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_2/wavy.jpg"  style="width:100%" />
+			<p><code>wavy_cube.bez</code></p>
+		</div>
+	</div>
+</div>
+<br>
+<h2 id="Section-2-Triangle-Meshes">Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+<div>
+	<h3 id="part-3-area-weighted-vertex-normals">Part 3: Area-Weighted Vertex Normals</h3>
+
+	<p>Here I implemented area-weighted normal vectors at vertices for Phong shading, which gives much smoother surfaces than flat shading. To compute an area-weighted normal at a given vertex, I performed the following for each face (triangle) incident to the input vertex:
+	<ol>
+		<li>Find the vertices of the current face <script type="math/tex">(a,b,c)</script> where <script type="math/tex">a</script> is the input vertex and <script type="math/tex">c</script> is clockwise to <script type="math/tex">b</script> by traversing around the face using the half-edge data structure.</li>
+		<li>Create two vectors <script type="math/tex">v_{ba} = b - a</script> and <script type="math/tex">v_{ca} = c - a</script> defining the edges of the triangle.</li>
+		<li>Compute the cross-product <script type="math/tex">v_{ca}\times v_{ba}</script>. By definition, the cross-product of two vectors gives a vector perpendicular to them, so this is the face normal. The order is important so that the normal points in the correct direction. The cross-product of these vectors also has the nice geometric property of having a norm equal to twice the area of the triangle. Thus, this resultant vector from the cross-product is already weighted by its area.</li>
+	</ol>
+	These area-weighted face normals are all summed, and this resulting vector is then normalized to get the final vertex normal.
+	</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_3/flat.jpg" style="width:100%" 
+			/>
+			<p>Default flat shading using face normals</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_3/phong.jpg" style="width:100%" />
+			<p>Phong shading using vertex normals</p>
+		</div>
+	</div>
+
+	<p>The two shading styles -- face normals and vertex normals -- are depicted above for the teapot mesh. The vertex normals make the teapot visibly more smooth and round, which better mirrors the underlying geometry.</p>
+
+</div>
+<br>
+<div>
+	<h3 id="part-4-edge-flip">Part 4: Edge Flip</h3>
+
+	<p>I implemented the edge flipping operation depicted below which flips the shared edge in a pair of triangles.<p>
+		<img src="./images/part_4/flip.jpg" style="width:100%" />
+
+	</p>This amounted to several careful pointer manipulations. I started by drawing the diagram and noting which changes this would cause to the mesh, trying to minimize the number of assignments. I found that none of the edges would need to be changed, and that of the vertices, only the two corresponding to the edge being flipped (<em>b</em> and <em>c</em>) would need to be modified.</p>
+
+	<p>First, I got the pointers to all of the variables that would be involved in the assignment, as they would be changed during this operation. Since it would minimize any errors and keep the code cleaner, I set all of the pointers for all of the half-edges using the <code>Halfedge::setNeighbors(...)</code> method. Then, I assigned the half-edges for 2 the faces and the vertices <em>b</em> and <em>c</em>. </p>
+
+	<p>One minor bug I ran into was that I did not initially account for the fact that <em>b</em> and <em>c</em> might start with half-edge <em>bc</em> or <em>cb</em>, in which case their half-edge pointer would need to be reassigned. This error was only found after flipping numerous edges since it is not always an issue.
+	</p>
+
+	<p>The images below illustrate the effect of edge flipping on two different meshes.</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_4/cube_orig.jpg" style="width:100%" 
+			/>
+			<p>A cube</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_4/cube_flip.jpg" style="width:100%" />
+			<p>A cube after edge flips</p>
+		</div>
+	</div>
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_4/torus_orig.jpg" style="width:100%" 
+			/>
+			<p>A torus</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_4/torus_flip.jpg" style="width:100%" />
+			<p>A torus after edge flips</p>
+		</div>
+	</div>
+
+</div>
+<br>
+<div>
+	<h3 id="part-5-edge-split">Part 5: Edge Split</h3>
+
+	<p>I next implemented the edge split operation depicted below which splits the shared edge about its midpoint in a pair of triangles, inserting a new vertex m.<p>
+		<img src="./images/part_4/flip.jpg" style="width:100%" />
+
+	<p>
+	This is similar to the previous edge flip operation in that it is another set of careful pointer manipulations, but this time more assignments are involved and new mesh elements are created -- namely 1 new vertex, 3 new edges, and 6 new half-edges. I took a similar approach as before in collecting all of the variables involved in the operation at the start and then systematically reassigning each type of mesh element (edges, vertices, faces, and half-edges). I luckily did not face any major bugs implementing this.
+	</p>
+
+	<p>Below are screenshots of the <code>cube.dae</code> mesh before and after a series of edge splits and edge flips.</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_5/cube.jpg" style="width:110%" />
+			<p>A cube</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_5/cube_split.jpg" style="width:110%" />
+			<p>A cube after some edge splits</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_5/cube_split_flip.jpg" style="width:110%" />
+			<p>A cube after many edge splits and flips</p>
+		</div>
+	</div>
+
+	<h4 id="extra-credit">Extra Credit: Boundary edge splits</h4>
+	<p>I also added support for edge splits at boundary edges. Unlike edge flips, edge splits can be applied to boundary edges, but only for the face that is non-boundary. To do this, we just need to determine the non-boundary half-edge and apply around half of the usual pointer reassignments. The effect of boundary edge splits can be seen below.</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_5/beetle_orig_boundary.jpg" style="width:100%" />
+			<p>Original <code>beetle.dae</code> boundary closeup</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_5/beetle_split_boundary.jpg" style="width:100%" />
+			<p><code>beetle.dae</code> after edge splits at boundary</p>
+		</div>
+	</div>
+
+</div>
+<br>
+<div>
+	<h3 id="part-6-loop-subdivision">Part 6: Loop Subdivision for Mesh Upsampling</h3>
+
+	<p>Here I implement loop subdivision, a mesh upsampling method that subdivides each triangle into 4 smaller triangles and then updates the vertices of this subdivided mesh with a reweighting scheme.</p>
+
+	<p>I proceeded as suggested in the project spec by performing the following steps: 
+		<ol>
+			<li>Compute the new positions for all existing vertices in the mesh using the loop subdivision reweighting scheme. All vertices are also marked to be part of the original mesh.</li>
+			<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field, and split the edge. Edges are also marked to be not new.</li>
+			<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> and <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in the edge.</li>
+			<li>Flip any new edge that connects an old and new vertex.</li>
+			<li>Finally, the vertex positions computed in step 1 are copied over to the original vertices in the mesh.</li>
+		</ol>
+	</p>
+
+	<p>Performing all of the computations first is crucial to prevent bugs, as the vertices will be reassigned through all of the edge operations.</p>
+
+	<p>As loop subdivision repositions vertices by a weighted average of neighboring vertices, it creates a more uniform mesh at each iteration, rounding and smoothing out the overall mesh shape. However, sharp corners still tend to protrude out of the mesh and edges become somewhat beveled. Pre-splitting edges can help somewhat further smooth the mesh and reduce the sharpness of the protrusions, as can be seen in the icosahedron mesh below.</p>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_6/icos_1.jpg" style="width:100%" />
+			<p>Original <code>icosahedron.dae</code></p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/icos_2.jpg" style="width:100%" />
+			<p>4x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/icos_split.jpg" style="width:100%" />
+			<p>4x upsampling with pre-splitting of most edges</p>
+		</div>
+	</div>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_6/bean_1.jpg" style="width:100%" />
+			<p>Original <code>bean.dae</code></p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/bean_2.jpg" style="width:100%" />
+			<p>4x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/bean_3.jpg" style="width:100%" />
+			<p>16x upsampling</p>
+		</div>
+	</div>
+
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_6/torus_1.jpg" style="width:100%" />
+			<p>Original <code>torus.dae</code></p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/torus_2.jpg" style="width:100%" />
+			<p>4x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/torus_3.jpg" style="width:100%" />
+			<p>16x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/torus_4.jpg" style="width:100%" />
+			<p>64x upsampling</p>
+		</div>
+	</div>
+
+	<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh and the end.</p>
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_a.jpg" style="width:100%" />
+			<p>Original <code>cube.dae</code></p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_a_1.jpg" style="width:100%" />
+			<p>4x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_a_2.jpg" style="width:100%" />
+			<p>16x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_a_3.jpg" style="width:100%" />
+			<p>64x upsampling</p>
+		</div>
+	</div>
+
+	<p>To remedy this, we can make all of the vertices rotationally equivalent to one another, creating more planes of symmetry, by pre-splitting some of the edges. This gives a much more symmetric mesh, as seen below.</p>
+	<div class="carousel-non-resize">
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube.jpg" style="width:100%" />
+			<p>Original <code>cube.dae</code> with the diagonal edges pre-split</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_1.jpg" style="width:100%" />
+			<p>4x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_2.jpg" style="width:100%" />
+			<p>16x upsampling</p>
+		</div>
+		<div class="carousel-col2">
+			<img src="./images/part_6/cube_3.jpg" style="width:100%" />
+			<p>64x upsampling</p>
+		</div>
+	</div>
+
+	<hr/>
+</div>
+<br><br>
+
+</div>
+</div>
+</div>
+</body>
+
 </html>
