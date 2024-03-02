@@ -46,16 +46,30 @@
 		Aayush Gupta
 	</h4>         
 
-	<p><img src="./images/cow_nobg.png"  alt="" style="width: 35%; display: block; margin-left: auto; margin-right: auto;" /></p>
+	
 <div>
 	<h2 id="overview">Overview</h2>
 
-	<p>
+	<div class="carousel-non-resize">
+		<div class="carousel-col2" style="text-align: left">
+			<p style="text-align: left">
+				In this project, I implemented a pipeline to model and manipulate meshes. In particular, I modeled Bezier curves and surfaces using the de Casteljau algorithm and implemented elementary mesh operations (edge-flips, edge-splits, and upsampling) using the half-edge data structure.
+			</p>
+			<p>This project gave me insight into how objects are geometrically modeled through meshes, which are a crucial aspect of computer graphics. I also solidified my understanding of Bezier curves/surfaces and became fluent in using the half-edge data structure.
+			</p>
+		</div>
+		<div class="carousel-col2">
+			<p><img src="./images/cow_nobg.png"  alt="" style="width: 75%; display: block; margin-left: auto; margin-right: auto;" /></p>
+		</div>
+	</div>
+
+	<!-- <p>
 		In this project, I implemented a pipeline to model and manipulate meshes. In particular, I modeled Bezier curves and surfaces using the de Casteljau algorithm and implemented elementary mesh operations (edge-flips, edge-splits, and upsampling) using the half-edge data structure.
 	</p>
+	<p><img src="./images/cow_nobg.png"  alt="" style="width: 35%; display: block; margin-left: auto; margin-right: auto;" /></p>
 
 	<p>This project gave me insight into how objects are geometrically modeled through meshes, which are a crucial aspect of computer graphics. I also solidified my understanding of Bezier curves/surfaces and became fluent in using the half-edge data structure.
-	</p>
+	</p> -->
 </div>
 <br>
 <div>
@@ -216,8 +230,8 @@
 <div>
 	<h3 id="part-5-edge-split">Part 5: Edge Split</h3>
 
-	<p>I next implemented the edge split operation depicted below which splits the shared edge about its midpoint in a pair of triangles, inserting a new vertex m.<p>
-		<img src="./images/part_4/flip.jpg" style="width:100%" />
+	<p>I next implemented the edge split operation depicted below which splits the shared edge in a pair of triangles about its midpoint, inserting a new vertex m.<p>
+		<img src="./images/part_5/split.jpg" style="width:100%" />
 
 	<p>
 	This is similar to the previous edge flip operation in that it is another set of careful pointer manipulations, but this time more assignments are involved and new mesh elements are created -- namely 1 new vertex, 3 new edges, and 6 new half-edges. I took a similar approach as before in collecting all of the variables involved in the operation at the start and then systematically reassigning each type of mesh element (edges, vertices, faces, and half-edges). I luckily did not face any major bugs implementing this.
@@ -260,18 +274,19 @@
 	<h3 id="part-6-loop-subdivision">Part 6: Loop Subdivision for Mesh Upsampling</h3>
 
 	<p>Here I implement loop subdivision, a mesh upsampling method that subdivides each triangle into 4 smaller triangles and then updates the vertices of this subdivided mesh with a reweighting scheme.</p>
+	<img src="./images/part_6/subdivision.jpg" style="width:100%" />
 
 	<p>I proceeded as suggested in the project spec by performing the following steps: 
 		<ol>
 			<li>Compute the new positions for all existing vertices in the mesh using the loop subdivision reweighting scheme. All vertices are also marked to be part of the original mesh.</li>
-			<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field, and split the edge. Edges are also marked to be not new.</li>
-			<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> and <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in the edge.</li>
+			<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field. Edges are also marked to be part of the original mesh.</li>
+			<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> to <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in their corresponding edge.</li>
 			<li>Flip any new edge that connects an old and new vertex.</li>
 			<li>Finally, the vertex positions computed in step 1 are copied over to the original vertices in the mesh.</li>
 		</ol>
 	</p>
 
-	<p>Performing all of the computations first is crucial to prevent bugs, as the vertices will be reassigned through all of the edge operations.</p>
+	<p>Performing all of the computations first is crucial to prevent bugs, as the mesh elements will be reassigned through all of the edge operations.</p>
 
 	<p>As loop subdivision repositions vertices by a weighted average of neighboring vertices, it creates a more uniform mesh at each iteration, rounding and smoothing out the overall mesh shape. However, sharp corners still tend to protrude out of the mesh and edges become somewhat beveled. Pre-splitting edges can help somewhat further smooth the mesh and reduce the sharpness of the protrusions, as can be seen in the icosahedron mesh below.</p>
 
@@ -324,7 +339,7 @@
 		</div>
 	</div>
 
-	<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh and the end.</p>
+	<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh at the end.</p>
 	<div class="carousel-non-resize">
 		<div class="carousel-col2">
 			<img src="./images/part_6/cube_a.jpg" style="width:100%" />
