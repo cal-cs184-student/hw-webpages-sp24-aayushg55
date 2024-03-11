@@ -38,7 +38,7 @@
 				</h1>
 
 				<h3 style="text-align: center">
-					CS 184: Computer Graphics and Imaging, Spring 2024
+					CS 184A/284A: Computer Graphics and Imaging, Spring 2024
 				</h3>
 
 				<h4 style="text-align: center">
@@ -73,6 +73,11 @@
 				</div>
 				<br>
 				<div>
+
+					<p>
+						For our pathtracer homework this time, our team consisted of two members, Aayush Gupta and Yulia Nugroho. We worked together  effectively, allowing us to complete the task well, even though we didn't start working on it as soon as Homework 3 was released. If Yulia was unable to work on the task, Aayush would take over, and vice versa. Aayush is an exceptionally skilled programmer and taught Yulia a lot, as she did not have a strong computer science background given that she is a civil engineer. Nevertheless, we both cooperated seamlessly, enabling us to finish this complex task promptly. Through this homework, we learned the practical application of concepts like ray tracing, Bounding Volume Hierarchy (BVH), methods for direct lighting, global illumination, and adaptive sampling, which were explained in class. Understanding these concepts wasn't fully grasped until we practiced them ourselves. Initially, we knew all of these concepts from the games we played on consoles or computers, or from 3D modeling and animation software like Houdini and Blender, or from game engines like Unity or Unreal Engine. But now, we truly understand the process behind all the lighting and realism we see in animated films and the games we play.
+					</p>
+
 					<h2 id="Section-1-Bezier-Curves-and-Surfaces">Part 1: Ray Generation and Scene Generation</h2>
 
 
@@ -163,9 +168,16 @@
 							Initially, we checked if the number of primitives was small enough to fit into a leaf node. If it was, we directly assigned the range of primitives to that node, making it a leaf in the BVH tree. Otherwise, we proceeded with the general case of building the hierarchy.
 						</p>
 
+						<h3 id="part-3-area-weighted-vertex-normals">
+							<span style="font-size: smaller;">
+								How did we choose the splitting point?
+							</span>
+						</h3>
+
 						<p>
-							We used the average centroid to decide the split position along the x-axis, categorizing the primitives into left and right groups based on their centroid's x-coordinate. This was to ensure a balanced distribution, aiming for efficient traversal later on. However, if all primitives ended up on one side of the split, indicating no effective division, we treated the entire set as a leaf node to prevent unnecessary splits.
+							We used the average centroid to decide the split position along either the x-axis, y-axis, or z-axis. We chose whichever of these three axes provided the best balance distribution for splitting the primitives. For example, there were 5 primitives, and we split them along the x-axis resulting in 4 primitives on the left and 1 on the right. But if we tried splitting along the y-axis and ended up with 3 primitives on the top and 2 on the bottom, then we would choose the y-axis. This method of splitting with the option of three axes made the rendering process much faster. It even resulted in a rendering process that was 7 times quicker.
 						</p>
+
 						<p>
 							Finally, we recursively constructed BVH nodes for the left and right groups of primitives, building a tree structure that would streamline the ray-primitive intersection tests in the rendering pipeline. This method significantly reduced the number of intersection checks needed, thereby enhancing the rendering performance.
 						</p>
@@ -227,246 +239,308 @@
 							The BVH acceleration technique speeds up rendering by organizing objects into a tree structure, which allows the path tracer to quickly disregard large groups of objects that a ray does not intersect. In Task 2, without BVH acceleration, each ray must check every single object for intersections, which is time-consuming, especially with many objects. However, Task 3 introduces BVH acceleration, which reduces these unnecessary checks. Now, rays only need to check objects within bounding boxes they intersect. This process significantly cuts down the number of calculations needed, as rays bypass large sections of the scene without potential intersections, making the rendering process much faster and more efficient.
 						</p>
 
+						<h2 id="Section-2-Triangle-Meshes">Part 3: Direct Illumination</h2>
+						<div>
+
+							<p>
+								!!!!!!!!!!Direct lighting function consists of two types of methods: Uniform hemisphere sampling and Importance sampling lights. blablabla!!!!!!!!!!!!!!!
+							</p>
+
+							<h3 id="part-3-area-weighted-vertex-normals">Task 3.1: Diffuse BSDF</h3>
+
+							<p>
+								We implemented the diffuse BSDF for rendering diffuse materials by creating functions to simulate light reflection. The DiffuseBSDF::f function assumed uniform light scattering, simplifying the reflectance calculation as a constant over the hemisphere. For the DiffuseBSDF::sample_f function, we sampled new incoming light directions to compute the BSDF, essential for realistic light interaction. While f computed the BSDF based on the specific incoming and outgoing directions, sample_f was responsible for generating a new incoming direction and evaluating its contribution to the final appearance of the material. These functions formed the foundation for more intricate light interaction calculations that would come later in the project.
+							</p>
+
+							<h3 id="part-3-area-weighted-vertex-normals">Task 3.2: Zero-bounce Illumination</h3>
+
+							<p>
+								For this part, we implemented a function called zero_bounce_radiance, which captured the light that hit the camera directly without bouncing off other surfaces. In the function,we returned the emission value from the BSDF of the intersected object. This emission is the color we see from an object when it's directly illuminated. Since we are not considering any bounces of light, this function only needed to return the light that comes straight from the light source to the camera. The get_emission() function provided the necessary light intensity without further complexity. When we called this function in the path tracer, it effectively calculated the direct illumination for the scene, adding to the realism of the rendered image.
+							</p>
+
+							<h3 id="part-3-area-weighted-vertex-normals">Task 3.3: Direct Lighting with Unfirom Hemisphere Sampling</h3>
+
+							<p>
+
+								In this task, we focused on implementing uniform hemisphere sampling to estimate direct lighting. This process involved simulating how light arrives at a specific point and determines the visual outcome in the scene. First, we initialized the probability density function (PDF) which in this case was constant due to the uniformity of the sampling across the hemisphere. Then,  we did a loop to generate random vectors that represent potential light directions, reflecting the idea that light could arrive from any point on the hemisphere.
+							</p>
+
+							<p>
+								With each vector, we created a new ray originating from the intersection point and checked if it intersected with a light source in the scene using a BVH acceleration structure. For those rays that did hit a light source, I calculated the reflected light contributing to the pixel's color by calling the BSDF function, accounting for both the emission of the light source and the surface's reflective properties. We repeated this process for a predefined number of samples to approximate the overall light arriving at the point.
+							</p>
+							<p>
+								After summing up all the contributions, we normalized the final radiance by the number of samples to average out the illumination. This approach allowed us to simulate direct lighting effects efficiently, giving  a basic yet effective representation of how light interacts with surfaces for the rendered images.
+							</p>
+
+							<h3 id="part-3-area-weighted-vertex-normals">Task 3.4: Direct Lighting by Importance Sampling</h3>
+
+							
+
+							<h2 id="Section-2-Triangle-Meshes">Part 4: Global Illumination</h2>
+							<div>
+
+								<h3 id="part-3-area-weighted-vertex-normals">Task 4.1: Sampling with Diffuse BSDF</h3>
+
+								<p>
+									In this part, we applied the same code from Part 3 Task 1  for the DiffuseBSDF::sample_f function. This function, integral to rendering diffuse materials, required sampling both incoming and outgoing light rays to determine how light scatters across a surface. The approach remained unchanged from the previous task, because that light reflects off surfaces uniformly in all directions of the hemisphere.
+								</p>
+
+								<h3 id="part-3-area-weighted-vertex-normals">Task 4.2: Global Illumination with up to N Bounces of Light</h3>
 
 
 
-						<p>
-							Here I implemented area-weighted normal vectors at vertices for Phong shading, which gives much smoother surfaces than flat shading. To compute an area-weighted normal at a given vertex, I performed the following for each face (triangle) incident to the input vertex:
-							<ol>
-								<li>
-									Find the vertices of the current face
-									<script type="math/tex">(a,b,c)</script> where
-									<script type="math/tex">a</script> is the input vertex and
-									<script type="math/tex">c</script> is clockwise to
-									<script type="math/tex">b</script> by traversing around the face using the half-edge data structure.
-								</li>
-								<li>
-									Create two vectors
-									<script type="math/tex">v_{ba} = b - a</script> and
-									<script type="math/tex">v_{ca} = c - a</script> defining the edges of the triangle.
-								</li>
-								<li>
-									Compute the cross-product
-									<script type="math/tex">v_{ca}\times v_{ba}</script>. By definition, the cross-product of two vectors gives a vector perpendicular to them, so this is the face normal. The order is important so that the normal points in the correct direction. The cross-product of these vectors also has the nice geometric property of having a norm equal to twice the area of the triangle. Thus, this resultant vector from the cross-product is already weighted by its area.
-								</li>
-							</ol>
-							These area-weighted face normals are all summed, and this resulting vector is then normalized to get the final vertex normal.
-						</p>
 
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_3/flat.jpg" style="width:100%" />
-								<p>Default flat shading using face normals</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<p>
+									Here I implemented area-weighted normal vectors at vertices for Phong shading, which gives much smoother surfaces than flat shading. To compute an area-weighted normal at a given vertex, I performed the following for each face (triangle) incident to the input vertex:
+									<ol>
+										<li>
+											Find the vertices of the current face
+											<script type="math/tex">(a,b,c)</script> where
+											<script type="math/tex">a</script> is the input vertex and
+											<script type="math/tex">c</script> is clockwise to
+											<script type="math/tex">b</script> by traversing around the face using the half-edge data structure.
+										</li>
+										<li>
+											Create two vectors
+											<script type="math/tex">v_{ba} = b - a</script> and
+											<script type="math/tex">v_{ca} = c - a</script> defining the edges of the triangle.
+										</li>
+										<li>
+											Compute the cross-product
+											<script type="math/tex">v_{ca}\times v_{ba}</script>. By definition, the cross-product of two vectors gives a vector perpendicular to them, so this is the face normal. The order is important so that the normal points in the correct direction. The cross-product of these vectors also has the nice geometric property of having a norm equal to twice the area of the triangle. Thus, this resultant vector from the cross-product is already weighted by its area.
+										</li>
+									</ol>
+									These area-weighted face normals are all summed, and this resulting vector is then normalized to get the final vertex normal.
+								</p>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_3/flat.jpg" style="width:100%" />
+										<p>Default flat shading using face normals</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_3/phong.jpg" style="width:100%" />
+										<p>Phong shading using vertex normals</p>
+									</div>
+								</div>
+
+								<p>The two shading styles -- face normals and vertex normals -- are depicted above for the teapot mesh. The vertex normals make the teapot visibly more smooth and round, which better mirrors the underlying geometry.</p>
+
 							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_3/phong.jpg" style="width:100%" />
-								<p>Phong shading using vertex normals</p>
+							<br>
+							<div>
+								<h3 id="part-4-edge-flip">Part 4: Edge Flip</h3>
+
+								<p>I implemented the edge flipping operation depicted below which flips the shared edge in a pair of triangles.<p>
+									<img src="./images/part_4/flip.jpg" style="width:100%" />
+
+								</p>This amounted to several careful pointer manipulations. I started by drawing the diagram and noting which changes this would cause to the mesh, trying to minimize the number of assignments. I found that none of the edges would need to be changed, and that of the vertices, only the two corresponding to the edge being flipped (<em>b</em> and <em>c</em>) would need to be modified.
+								</p>
+
+								<p>First, I got the pointers to all of the variables that would be involved in the assignment, as they would be changed during this operation. Since it would minimize any errors and keep the code cleaner, I set all of the pointers for all of the half-edges using the <code>Halfedge::setNeighbors(...)</code> method. Then, I assigned the half-edges for 2 the faces and the vertices <em>b</em> and <em>c</em>. </p>
+
+								<p>
+									One minor bug I ran into was that I did not initially account for the fact that <em>b</em> and <em>c</em> might start with half-edge <em>bc</em> or <em>cb</em>, in which case their half-edge pointer would need to be reassigned. This error was only found after flipping numerous edges since it is not always an issue.
+								</p>
+
+								<p>The images below illustrate the effect of edge flipping on two different meshes.</p>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_4/cube_orig.jpg" style="width:100%" />
+										<p>A cube</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_4/cube_flip.jpg" style="width:100%" />
+										<p>A cube after edge flips</p>
+									</div>
+								</div>
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_4/torus_orig.jpg" style="width:100%" />
+										<p>A torus</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_4/torus_flip.jpg" style="width:100%" />
+										<p>A torus after edge flips</p>
+									</div>
+								</div>
+
 							</div>
+							<br>
+							<div>
+								<h3 id="part-5-edge-split">Part 5: Edge Split</h3>
+
+								<p>I next implemented the edge split operation depicted below which splits the shared edge in a pair of triangles about its midpoint, inserting a new vertex m.<p>
+									<img src="./images/part_5/split.jpg" style="width:100%" />
+
+								<p>
+									This is similar to the previous edge flip operation in that it is another set of careful pointer manipulations, but this time more assignments are involved and new mesh elements are created -- namely 1 new vertex, 3 new edges, and 6 new half-edges. I took a similar approach as before in collecting all of the variables involved in the operation at the start and then systematically reassigning each type of mesh element (edges, vertices, faces, and half-edges). I luckily did not face any major bugs implementing this.
+								</p>
+
+								<p>Below are screenshots of the <code>cube.dae</code> mesh before and after a series of edge splits and edge flips.</p>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_5/cube.jpg" style="width:110%" />
+										<p>A cube</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_5/cube_split.jpg" style="width:110%" />
+										<p>A cube after some edge splits</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_5/cube_split_flip.jpg" style="width:110%" />
+										<p>A cube after many edge splits and flips</p>
+									</div>
+								</div>
+
+								<h4 id="extra-credit">Extra Credit: Boundary edge splits</h4>
+								<p>I also added support for edge splits at boundary edges. Unlike edge flips, edge splits can be applied to boundary edges, but only for the face that is non-boundary. To do this, we just need to determine the non-boundary half-edge and apply around half of the usual pointer reassignments. The effect of boundary edge splits can be seen below.</p>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_5/beetle_orig_boundary.jpg" style="width:100%" />
+										<p>Original <code>beetle.dae</code> boundary closeup</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_5/beetle_split_boundary.jpg" style="width:100%" />
+										<p><code>beetle.dae</code> after edge splits at boundary</p>
+									</div>
+								</div>
+
+							</div>
+							<br>
+							<div>
+								<h3 id="part-6-loop-subdivision">Part 6: Loop Subdivision for Mesh Upsampling</h3>
+
+								<p>Here I implement loop subdivision, a mesh upsampling method that subdivides each triangle into 4 smaller triangles and then updates the vertices of this subdivided mesh with a reweighting scheme.</p>
+								<img src="./images/part_6/subdivision.jpg" style="width:100%" />
+
+								<p>
+									I proceeded as suggested in the project spec by performing the following steps:
+									<ol>
+										<li>Compute the new positions for all existing vertices in the mesh using the loop subdivision reweighting scheme. All vertices are also marked to be part of the original mesh.</li>
+										<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field. Edges are also marked to be part of the original mesh.</li>
+										<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> to <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in their corresponding edge.</li>
+										<li>Flip any new edge that connects an old and new vertex.</li>
+										<li>Finally, the vertex positions computed in step 1 are copied over to the original vertices in the mesh.</li>
+									</ol>
+								</p>
+
+								<p>Performing all of the computations first is crucial to prevent bugs, as the mesh elements will be reassigned through all of the edge operations.</p>
+
+								<p>As loop subdivision repositions vertices by a weighted average of neighboring vertices, it creates a more uniform mesh at each iteration, rounding and smoothing out the overall mesh shape. However, sharp corners still tend to protrude out of the mesh and edges become somewhat beveled. Pre-splitting edges can help somewhat further smooth the mesh and reduce the sharpness of the protrusions, as can be seen in the icosahedron mesh below.</p>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_6/icos_1.jpg" style="width:100%" />
+										<p>Original <code>icosahedron.dae</code></p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/icos_2.jpg" style="width:100%" />
+										<p>4x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/icos_split.jpg" style="width:100%" />
+										<p>4x upsampling with pre-splitting of most edges</p>
+									</div>
+								</div>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_6/bean_1.jpg" style="width:100%" />
+										<p>Original <code>bean.dae</code></p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/bean_2.jpg" style="width:100%" />
+										<p>4x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/bean_3.jpg" style="width:100%" />
+										<p>16x upsampling</p>
+									</div>
+								</div>
+
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_6/torus_1.jpg" style="width:100%" />
+										<p>Original <code>torus.dae</code></p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/torus_2.jpg" style="width:100%" />
+										<p>4x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/torus_3.jpg" style="width:100%" />
+										<p>16x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/torus_4.jpg" style="width:100%" />
+										<p>64x upsampling</p>
+									</div>
+								</div>
+
+								<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh at the end.</p>
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_a.jpg" style="width:100%" />
+										<p>Original <code>cube.dae</code></p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_a_1.jpg" style="width:100%" />
+										<p>4x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_a_2.jpg" style="width:100%" />
+										<p>16x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_a_3.jpg" style="width:100%" />
+										<p>64x upsampling</p>
+									</div>
+								</div>
+
+								<p>To remedy this, we can make all of the vertices rotationally equivalent to one another, creating more planes of symmetry, by pre-splitting some of the edges. This gives a much more symmetric mesh, as seen below.</p>
+								<div class="carousel-non-resize">
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube.jpg" style="width:100%" />
+										<p>Original <code>cube.dae</code> with the diagonal edges pre-split</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_1.jpg" style="width:100%" />
+										<p>4x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_2.jpg" style="width:100%" />
+										<p>16x upsampling</p>
+									</div>
+									<div class="carousel-col2">
+										<img src="./images/part_6/cube_3.jpg" style="width:100%" />
+										<p>64x upsampling</p>
+									</div>
+								</div>
+
+								<hr />
+							</div>
+							<br><br>
+
 						</div>
-
-						<p>The two shading styles -- face normals and vertex normals -- are depicted above for the teapot mesh. The vertex normals make the teapot visibly more smooth and round, which better mirrors the underlying geometry.</p>
-
 					</div>
-					<br>
-					<div>
-						<h3 id="part-4-edge-flip">Part 4: Edge Flip</h3>
-
-						<p>I implemented the edge flipping operation depicted below which flips the shared edge in a pair of triangles.<p>
-							<img src="./images/part_4/flip.jpg" style="width:100%" />
-
-						</p>This amounted to several careful pointer manipulations. I started by drawing the diagram and noting which changes this would cause to the mesh, trying to minimize the number of assignments. I found that none of the edges would need to be changed, and that of the vertices, only the two corresponding to the edge being flipped (<em>b</em> and <em>c</em>) would need to be modified.
-						</p>
-
-						<p>First, I got the pointers to all of the variables that would be involved in the assignment, as they would be changed during this operation. Since it would minimize any errors and keep the code cleaner, I set all of the pointers for all of the half-edges using the <code>Halfedge::setNeighbors(...)</code> method. Then, I assigned the half-edges for 2 the faces and the vertices <em>b</em> and <em>c</em>. </p>
-
-						<p>
-							One minor bug I ran into was that I did not initially account for the fact that <em>b</em> and <em>c</em> might start with half-edge <em>bc</em> or <em>cb</em>, in which case their half-edge pointer would need to be reassigned. This error was only found after flipping numerous edges since it is not always an issue.
-						</p>
-
-						<p>The images below illustrate the effect of edge flipping on two different meshes.</p>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_4/cube_orig.jpg" style="width:100%" />
-								<p>A cube</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_4/cube_flip.jpg" style="width:100%" />
-								<p>A cube after edge flips</p>
-							</div>
-						</div>
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_4/torus_orig.jpg" style="width:100%" />
-								<p>A torus</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_4/torus_flip.jpg" style="width:100%" />
-								<p>A torus after edge flips</p>
-							</div>
-						</div>
-
-					</div>
-					<br>
-					<div>
-						<h3 id="part-5-edge-split">Part 5: Edge Split</h3>
-
-						<p>I next implemented the edge split operation depicted below which splits the shared edge in a pair of triangles about its midpoint, inserting a new vertex m.<p>
-							<img src="./images/part_5/split.jpg" style="width:100%" />
-
-						<p>
-							This is similar to the previous edge flip operation in that it is another set of careful pointer manipulations, but this time more assignments are involved and new mesh elements are created -- namely 1 new vertex, 3 new edges, and 6 new half-edges. I took a similar approach as before in collecting all of the variables involved in the operation at the start and then systematically reassigning each type of mesh element (edges, vertices, faces, and half-edges). I luckily did not face any major bugs implementing this.
-						</p>
-
-						<p>Below are screenshots of the <code>cube.dae</code> mesh before and after a series of edge splits and edge flips.</p>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_5/cube.jpg" style="width:110%" />
-								<p>A cube</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_5/cube_split.jpg" style="width:110%" />
-								<p>A cube after some edge splits</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_5/cube_split_flip.jpg" style="width:110%" />
-								<p>A cube after many edge splits and flips</p>
-							</div>
-						</div>
-
-						<h4 id="extra-credit">Extra Credit: Boundary edge splits</h4>
-						<p>I also added support for edge splits at boundary edges. Unlike edge flips, edge splits can be applied to boundary edges, but only for the face that is non-boundary. To do this, we just need to determine the non-boundary half-edge and apply around half of the usual pointer reassignments. The effect of boundary edge splits can be seen below.</p>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_5/beetle_orig_boundary.jpg" style="width:100%" />
-								<p>Original <code>beetle.dae</code> boundary closeup</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_5/beetle_split_boundary.jpg" style="width:100%" />
-								<p><code>beetle.dae</code> after edge splits at boundary</p>
-							</div>
-						</div>
-
-					</div>
-					<br>
-					<div>
-						<h3 id="part-6-loop-subdivision">Part 6: Loop Subdivision for Mesh Upsampling</h3>
-
-						<p>Here I implement loop subdivision, a mesh upsampling method that subdivides each triangle into 4 smaller triangles and then updates the vertices of this subdivided mesh with a reweighting scheme.</p>
-						<img src="./images/part_6/subdivision.jpg" style="width:100%" />
-
-						<p>
-							I proceeded as suggested in the project spec by performing the following steps:
-							<ol>
-								<li>Compute the new positions for all existing vertices in the mesh using the loop subdivision reweighting scheme. All vertices are also marked to be part of the original mesh.</li>
-								<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field. Edges are also marked to be part of the original mesh.</li>
-								<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> to <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in their corresponding edge.</li>
-								<li>Flip any new edge that connects an old and new vertex.</li>
-								<li>Finally, the vertex positions computed in step 1 are copied over to the original vertices in the mesh.</li>
-							</ol>
-						</p>
-
-						<p>Performing all of the computations first is crucial to prevent bugs, as the mesh elements will be reassigned through all of the edge operations.</p>
-
-						<p>As loop subdivision repositions vertices by a weighted average of neighboring vertices, it creates a more uniform mesh at each iteration, rounding and smoothing out the overall mesh shape. However, sharp corners still tend to protrude out of the mesh and edges become somewhat beveled. Pre-splitting edges can help somewhat further smooth the mesh and reduce the sharpness of the protrusions, as can be seen in the icosahedron mesh below.</p>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_6/icos_1.jpg" style="width:100%" />
-								<p>Original <code>icosahedron.dae</code></p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/icos_2.jpg" style="width:100%" />
-								<p>4x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/icos_split.jpg" style="width:100%" />
-								<p>4x upsampling with pre-splitting of most edges</p>
-							</div>
-						</div>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_6/bean_1.jpg" style="width:100%" />
-								<p>Original <code>bean.dae</code></p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/bean_2.jpg" style="width:100%" />
-								<p>4x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/bean_3.jpg" style="width:100%" />
-								<p>16x upsampling</p>
-							</div>
-						</div>
-
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_6/torus_1.jpg" style="width:100%" />
-								<p>Original <code>torus.dae</code></p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/torus_2.jpg" style="width:100%" />
-								<p>4x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/torus_3.jpg" style="width:100%" />
-								<p>16x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/torus_4.jpg" style="width:100%" />
-								<p>64x upsampling</p>
-							</div>
-						</div>
-
-						<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh at the end.</p>
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_a.jpg" style="width:100%" />
-								<p>Original <code>cube.dae</code></p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_a_1.jpg" style="width:100%" />
-								<p>4x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_a_2.jpg" style="width:100%" />
-								<p>16x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_a_3.jpg" style="width:100%" />
-								<p>64x upsampling</p>
-							</div>
-						</div>
-
-						<p>To remedy this, we can make all of the vertices rotationally equivalent to one another, creating more planes of symmetry, by pre-splitting some of the edges. This gives a much more symmetric mesh, as seen below.</p>
-						<div class="carousel-non-resize">
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube.jpg" style="width:100%" />
-								<p>Original <code>cube.dae</code> with the diagonal edges pre-split</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_1.jpg" style="width:100%" />
-								<p>4x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_2.jpg" style="width:100%" />
-								<p>16x upsampling</p>
-							</div>
-							<div class="carousel-col2">
-								<img src="./images/part_6/cube_3.jpg" style="width:100%" />
-								<p>64x upsampling</p>
-							</div>
-						</div>
-
-						<hr />
-					</div>
-					<br><br>
-
-				</div>
-		</div>
 	</div>
 </body>
 
