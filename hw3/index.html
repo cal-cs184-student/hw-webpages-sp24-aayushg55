@@ -1,547 +1,810 @@
-<!DOCTYPE HTML>
 <html>
-
+	<head>
+	</head>
+	<body>
+		_
+	</body>
+</html>
+<!DOCTYPE html>
+<html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HW 3 Pathtracer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <style>
+        body, html {
+            height: 100%;
+            font-family: "Inconsolata", sans-serif;
+        }
 
-	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
+        .bgimg {
+            background-position: center;
+            background-size: cover;
+            background-image: url("/w3images/coffeehouse.jpg");
+            min-height: 75%;
+        }
 
-	<link rel="stylesheet" href="./../css/animate.css">
-	<link rel="stylesheet" href="./../css/icomoon.css">
-	<link rel="stylesheet" href="./../css/bootstrap.css">
-	<link rel="stylesheet" href="./../css/style.css">
-	<link rel="stylesheet" href="./../css/syntax.css">
+        .menu {
+            display: none;
+        }
 
-	<script type="text/javascript" async
-			src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-	</script>
+        /* Add this rule to ensure images are not affected by any filters */
+        img {
+            filter: none !important;
+        }
 
+        table {
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            width: 100%;
+          }
+          
+          table, th, td {
+            border: 1px solid black;
+          }
 
-	<!-- Modernizr JS -->
-	<script src="../js/modernizr-2.6.2.min.js"></script>
-	<title>CS 184 Mesh Editor</title>
-
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+        code {
+            padding: 2px 4px;
+            font-size: 90%;
+            color: #c7254e;
+            background-color: #9b717c21;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-
 <body>
 
-	<div id="colorlib-page">
+    <!-- Links (sit on top) -->
+    <div class="w3-top">
+        <div class="w3-row w3-padding w3-black">
+            <div class="w3-col s3">
+                <a href="#overview" class="w3-button w3-block w3-black">OVERVIEW</a>
+            </div>
+            <div class="w3-col s3">
+                <a href="#part1" class="w3-button w3-block w3-black">PART 1</a>
+            </div>
+            <div class="w3-col s3">
+                <a href="#part2" class="w3-button w3-block w3-black">PART 2</a>
+            </div>
+            <div class="w3-col s3">
+                <a href="#part3" class="w3-button w3-block w3-black">PART 3</a>
+            </div>
+            <div class="w3-col s3">
+                <a href="#part4" class="w3-button w3-block w3-black">PART 4</a>
+            </div>
+            <div class="w3-col s3">
+                <a href="#part5" class="w3-button w3-block w3-black">PART 5</a>
+            </div>
+        </div>
+    </div>
 
-		<div id="colorlib-main">
-			<div id="colorlib-post">
 
-				<h1 class="post-title" style="text-align: center">
-					<a href="https://cal-cs184-student.github.io/hw-webpages-sp24-aayushg55/hw2/index.html">Homework 3: Pathtracer</a>
-				</h1>
 
-				<h3 style="text-align: center">
-					CS 184A/284A: Computer Graphics and Imaging, Spring 2024
-				</h3>
+    <!-- Add a background color and large text to the whole page -->
+    
 
-				<h4 style="text-align: center">
-					Aayush Gupta & Yulia Nugroho
-				</h4>
+        <!-- About Container -->
 
+    <div class="w3-content" style="max-width:1000px">
+        <h5 class="w3-center w3-padding-64" style="font-size: 36px; padding-top: 10px;"><span class="w3-tag w3-wide"><a href="https://cal-cs184-student.github.io/hw-webpages-sp24-aayushg55/hw3/index.html">Homework 3 : Pathtracer</a></span></h5>
 
-				<div>
-					<h2 id="overview">Overview</h2>
+        <h5 class="w3-center" style="font-size: 22px; padding-top: 1px; padding-bottom: 20px;"><span class="w3-tag w3-wide">CS 184/284A : Computer Graphics and Imaging</span></h5>
 
-					<div class="carousel-non-resize">
-						<div class="carousel-col2" style="text-align: left">
-							<p style="text-align: left">
-								In this project, I implemented a pipeline to model and manipulate meshes. In particular, I modeled Bezier curves and surfaces using the de Casteljau algorithm and implemented elementary mesh operations (edge-flips, edge-splits, and upsampling) using the half-edge data structure.
-							</p>
-							<p>
-								This project gave me insight into how objects are geometrically modeled through meshes, which are a crucial aspect of computer graphics. I also solidified my understanding of Bezier curves/surfaces and became fluent in using the half-edge data structure.
-							</p>
-						</div>
-						<div class="carousel-col2">
-							<p><img src="./images/cow_nobg.png" alt="" style="width: 75%; display: block; margin-left: auto; margin-right: auto;" /></p>
-						</div>
-					</div>
+        <h5 class="w3-center" style="font-size: 20px; padding-top: 20px; padding-bottom: 20px;"><span class="w3-tag w3-wide">Aayush Gupta & Yulia Nugroho</span></h5>
 
-					<!-- <p>
-						In this project, I implemented a pipeline to model and manipulate meshes. In particular, I modeled Bezier curves and surfaces using the de Casteljau algorithm and implemented elementary mesh operations (edge-flips, edge-splits, and upsampling) using the half-edge data structure.
-					</p>
-					<p><img src="./images/cow_nobg.png"  alt="" style="width: 35%; display: block; margin-left: auto; margin-right: auto;" /></p>
+        <div class="w3-container" id="overview">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 10px; font-weight: bold; max-width: 40%; display: inline-block; color: black; ">
+                <span>Overview</span>
+            </div>
+
+            <p>
+                For our Homework 3 project, we were trying to make image rendering that looks real and natural. We started by figuring out how to make light rays come out from a virtual camera and hit objects to make a 3D picture. Then, we made the program work more efficiently so it could decide which parts of the picture to work on more, making everything faster. As we went through the tasks, we learned about making realistic lights and shadows in our pictures, and how to save time and computer power by focusing on the parts that really needed it.
+            </p>
+
+            <p>
+                We had to solve a few tough spots, like dealing with grainy parts in our images, but we found good ways to smooth them out. The big lesson was learning when and where to pay extra attention to the details in our images to make them look their best without wasting effort. This project taught us how to combine the ideas we learned about in class with the real steps of building these graphics on the computer.
+            </p>
+
+            <div class="w3-panel w3-leftbar w3-light-grey">
+                <p><i>For the Pathtracer homework, our team consisted of two members, Aayush Gupta and Yulia Nugroho. We worked together  effectively, allowing us to complete the task well, even though we didn't start working on it as soon as Homework 3 was released. If Yulia was unable to work on the task, Aayush would take over, and vice versa. Aayush is an exceptionally skilled programmer and taught Yulia a lot, as she did not have a strong computer science background given that she is a civil engineer. Nevertheless, we both cooperated seamlessly, enabling us to finish this complex task promptly.</i></p>
+                <p><i>Through this homework, we learned the practical application of concepts like ray tracing, Bounding Volume Hierarchy (BVH), methods for direct lighting, global illumination, and adaptive sampling, which were explained in class. Understanding these concepts wasn't fully grasped until we practiced them ourselves. Initially, we knew all of these concepts from the games we played on consoles or computers, or from 3D modeling and animation software like Houdini and Blender, or from game engines like Unity or Unreal Engine. But now, we truly understand the process behind all the lighting and realism we see in animated films and the games we play.</i></p>
+
+            </div>
+        </div>
 
-					<p>This project gave me insight into how objects are geometrically modeled through meshes, which are a crucial aspect of computer graphics. I also solidified my understanding of Bezier curves/surfaces and became fluent in using the half-edge data structure.
-					</p> -->
-				</div>
-				<br>
-				<div>
 
-					<p>
-						For our pathtracer homework this time, our team consisted of two members, Aayush Gupta and Yulia Nugroho. We worked together  effectively, allowing us to complete the task well, even though we didn't start working on it as soon as Homework 3 was released. If Yulia was unable to work on the task, Aayush would take over, and vice versa. Aayush is an exceptionally skilled programmer and taught Yulia a lot, as she did not have a strong computer science background given that she is a civil engineer. Nevertheless, we both cooperated seamlessly, enabling us to finish this complex task promptly. Through this homework, we learned the practical application of concepts like ray tracing, Bounding Volume Hierarchy (BVH), methods for direct lighting, global illumination, and adaptive sampling, which were explained in class. Understanding these concepts wasn't fully grasped until we practiced them ourselves. Initially, we knew all of these concepts from the games we played on consoles or computers, or from 3D modeling and animation software like Houdini and Blender, or from game engines like Unity or Unreal Engine. But now, we truly understand the process behind all the lighting and realism we see in animated films and the games we play.
-					</p>
+        <div class="w3-container" id="part1">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 10px; font-weight: bold; max-width: 60%; display: inline-block; color: black; ">
+                <span>PART 1 : Ray Generation and Scene Generation</span>
+            </div>
 
-					<h2 id="Section-1-Bezier-Curves-and-Surfaces">Part 1: Ray Generation and Scene Generation</h2>
 
+            <p>
+                The ray generation and its intersection are crucial for rendering 3D graphics. Its generation starts in the camera system, where a ray is constructed and projected into the scene for each pixel on the image plane. The transformation from pixel space to ray direction depends on the camera's specs, including its position, orientation, and field of view. Basically, the algorithm figures out a direction vector for each pixel that goes from where the camera is to the pixel on the virtual picture plane and out into the scene.
+            </p>
 
-					<p>
-						The ray generation and its intersection are crucial for rendering 3D graphics. Its generation starts in the camera system, where a ray is constructed and projected into the scene for each pixel on the image plane. The transformation from pixel space to ray direction depends on the camera’s specs, including its position, orientation, and field of view. Basically, the algorithm figures out a direction vector for each pixel that goes from where the camera is to the pixel on the virtual picture plane and out into the scene.
-					</p>
+            <h3 id="Part-1-Ray-Generation">Task 1.1: Generating Camera Rays</h3>
 
-					<h3 id="Part-1-Bezier-Curves">Task 1.1: Generating Camera Rays</h3>
+            <p>
+                For the first task, we implemented three major steps. First, we transform the normalized image coordinates to the camera's frame in 3D, where the camera “observes” this scene. This step changed the image coordinate to a location on the camera sensor. Then, it is time to generate the ray in the camera that goes through the point on the camera sensor we just calculated. For the final step, we transformed the ray into the world frame, which is in 3D, by multiplying it with the c2w rotation matrix.
+            </p>
 
-					<p>
-						For the first task, we implemented four major steps. The first step is to normalize the image coordinate. The coordinate must be mapped to the camera’s field of view (hFov for horizontal and vFov for vertical). The normalization was done by calling this function ‘generate_ray’, so we didn’t have to normalize it manually.  After that, we should change the normalized image to the camera’s dimension in 3D, where the camera “observes” this scene. This step changed the image coordinate to a location in the camera sensor. Then, it is time to generate rays in the camera that point to the camera sensor we just calculated. For the final step, we transformed the ray to an actual word dimension, which is in 3D, by implementing the c2w rotation matrix.
-					</p>
+            <h3 id="Part-1-Ray-Generation">Task 1.2: Generating Pixel Samples</h3>
 
+            <p>
+                In Task 2, we estimate the integral of radiance over a pixel to obtain its pixel value. This was done by randomly sampling many ray samples for a pixel on the display, computing the brightness for each ray, and then averaging these values to determine the final color for each pixel. This brightness information helped us update the screen with the correct color for every pixel. We began by setting the number of samples, using "num_samples" equal to "ns_aa," and initializing "pixel_radiance" as a zero 3D vector. This vector is where we accumulated the brightness from all the rays we generated for a pixel.
+            </p>
 
+            <p>
+                In a loop that ran as many times as there were samples, we collected each sample and normalized it to fit within the 0 to 1 range. This step was crucial because it helped us produce the camera rays needed to assess how each ray interacted with the scene to calculate its brightness, which in turn added to the total brightness of the pixel.
+            </p>
 
+            <p>
+                After processing all the samples, we calculated the average brightness for the pixel, which we then used to change the color in the rendered image. This averaging process was important because it blended the brightness from different random samples, ensuring the colors appeared smooth and realistic on the screen. We also updated the sampleCountBuffer to keep track of the number of samples processed for each pixel.
+            </p>
 
-					<h3 id="part-2-bezier-surfaces">Task 1.2: Generating Pixel Samples</h3>
+            <h3 id="Part-1-Ray-Generation">Task 1.3: Ray-Triangle Intersection</h3>
 
-					<p>
-						In Task 2, we worked on creating ray samples for every pixel on the display. Our goal was to figure out the brightness for each ray and then average these values to determine the final color for each pixel. This brightness information helped us update the screen with the correct color for every pixel. We began by setting the number of samples, using "num_samples" equal to "ns_aa," and initializing "pixel_radiance" as a zero 3D vector. This vector is where we accumulated the brightness from all the rays we generated for a pixel.
-					</p>
+            <p>
 
-					<p>
-						In a loop that ran as many times as there were samples, we collected each sample and adjusted it to fit within the 0 to 1 range by blending it with the pixel's position. This step was crucial because it helped us produce the camera rays needed to assess how each ray interacted with the scene to calculate its brightness, which in turn added to the total brightness of the pixel.
-					</p>
+                In Task 3, we implemented the triangle intersection by focusing on how a ray interacted with the surface of a triangle. Initially, we identified the triangle's edges by calculating the vectors between its vertices, establishing the geometric basis of the triangle. We then proceeded to calculate the cross-product of the ray's direction and one of the triangle's edges, which was essential for determining if the ray was parallel to the triangle or not. If the result was too close to zero, we knew the ray wouldn't intersect with the triangle, and we returned false, indicating no intersection.
+            </p>
 
-					<p>
-						After processing all the samples, we calculated the average brightness for the pixel, which we then used to change the color in the rendered image. This averaging process was important because it blended the brightness from different samples, ensuring the colors appeared smooth and realistic on the screen. We also updated the sampleCountBuffer to keep track of the number of samples processed for each pixel. This mechanism was key in PathTracer, allowing us to render the final image with detailed and accurate color by working out and applying the brightness values for each pixel.
-					</p>
+            <p>
+                We delved deeper into the intersection logic by calculating specific parameters named 'u' and 'v', representing the barycentric coordinates within the triangle, which helped us confirm whether the intersection point was indeed within the triangle's boundaries. The calculation of 't', the distance from the ray's origin to the intersection point, was another critical step, acting as a decisive factor for whether the ray actually intersected within the ray's acceptable range.
+            </p>
 
-					<h3 id="part-2-bezier-surfaces">Task 1.3: Ray-Triangle Intersection</h3>
+            <p>
+                Finally, when an intersection was confirmed, we updated the intersection structure with all the necessary details: the distance 't', the hit point, the normal at the intersection, and the surface properties. This comprehensive approach ensured that every interaction of the ray with the triangle was accurately processed, contributing to the overall realism of the rendered scene.
+            </p>
+
+            <div style="text-align:center; background: none; filter: none;">
+                <figure>
+                    <img src="images/part_1/cbempty.png" alt="Task 3 - CBempty" style="width:50%; margin:auto;">
+                    <figcaption>Figure 1. Part 1 - Task 3 - CBempty.dae</figcaption>
+                </figure>
+            </div>
 
-					<p>
 
-						In Task 3, we implemented the triangle intersection by focusing on how a ray interacted with the surface of a triangle. Initially, we identified the triangle's edges by calculating the vectors between its vertices, establishing the geometric basis of the triangle. We then proceeded to calculate the cross-product of the ray's direction and one of the triangle's edges, which was essential for determining if the ray was parallel to the triangle or not. If the result was too close to zero, we knew the ray wouldn't intersect with the triangle, and we returned false, indicating no intersection.
-					</p>
+            <h3 id="Part-1-Ray-Generation">Task 1.4: Ray-Sphere Intersection</h3>
 
-					<p>
-						We delved deeper into the intersection logic by calculating specific parameters named 'u' and 'v', representing the barycentric coordinates within the triangle, which helped us confirm whether the intersection point was indeed within the triangle's boundaries. The calculation of 't', the distance from the ray's origin to the intersection point, was another critical step, acting as a decisive factor for whether the ray actually intersected within the triangle's acceptable range.
-					</p>
+            <p>
+                In task 4, for our understanding of sphere intersection, we encountered the fundamental concept of how a ray interacts with a sphere, which differs from triangles' planar nature. Initially, we identified the sphere's center and radius to establish the scene's geometry where the sphere resides. To comprehend the interaction, we utilized the mathematical model of a ray intersecting a sphere, which involves solving a quadratic equation. This approach revealed whether the ray actually hits the sphere by calculating the discriminant of this equation. A negative discriminant indicated that the ray missed the sphere, allowing us to terminate the calculation early.
+            </p>
+
+            <p>
+                Upon finding a positive discriminant, we calculated the intersection points, often referred to as t1 and t2. These points denote where the ray enters and exits the sphere. It was crucial to ensure these points were within the ray's valid range, allowing for accurate intersection detection. In cases where the ray originates inside the sphere, we adjusted the intersection point to the closest exit point. This process refined our understanding of spatial relationships within 3D rendering, where the ray's interaction with the sphere directly influenced the visual outcome on the screen.
+            </p>
+
+            <p>
+                In summary, the sphere intersection implementation consisted of calculating the ray's potential entry and exit points on the sphere's surface and determining the closest point to the ray's origin. This precise calculation allowed for correctly rendering the sphere's surface, capturing its curvatures and how light interacts in a 3D space.
+            </p>
 
-					<p>
-						Finally, when an intersection was confirmed, we updated the intersection structure with all the necessary details: the distance 't', the hit point, the normal at the intersection, and the surface properties. This comprehensive approach ensured that every interaction of the ray with the triangle was accurately processed, contributing to the overall realism of the rendered scene.
-					</p>
+            <br>
 
-					<div style="text-align:center;">
-						<figure>
-							<img src="../hw3/images/part1_task3 .png" alt="Task 3 - CBempty" style="width:50%; margin:auto;">
-							<figcaption>Figure 1. Part 1 - Task 3 - CBempty</figcaption>
-						</figure>
-					</div>
+            <p>Below are some images for a few small <i>.dae</i> files using normal shading for color. All of them had fewer than 10k primitives.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_1/CBspheres.png" alt="CBspheres.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>CBspheres.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_1/CBcoil.png" alt="CBcoil.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>CBcoil.dae</figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_1/teapot.png" alt="teapot.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>teapot.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_1/cow.png" alt="cow.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>cow.dae</figcaption>
+                </figure>
+            </div>
 
+        </div>
 
 
+        <br>
 
 
-					<h3 id="part-2-bezier-surfaces">Task 1.4: Ray-Sphere Intersection</h3>
+        <div class="w3-container" id="part2">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 10px; font-weight: bold; max-width: 60%; display: inline-block; color: black; ">
+                <span>PART 2 : Bounding Volume Hierarchy</span>
+            </div>
 
-					<p>
-						In task 4, for our understanding of sphere intersection, we encountered the fundamental concept of how a ray interacts with a sphere, which differs from triangles' planar nature. Initially, we identified the sphere's center and radius to establish the scene's geometry where the sphere resides. To comprehend the interaction, we utilized the mathematical model of a ray intersecting a sphere, which involves solving a quadratic equation. This approach revealed whether the ray actually hits the sphere by calculating the discriminant of this equation. A negative discriminant indicated that the ray missed the sphere, allowing us to terminate the calculation early.
-					</p>
+            <h3 id="part-3-area-weighted-vertex-normals">Task 2.1: Constructing the BVH</h3>
 
-					<p>
-						Upon finding a positive discriminant, we calculated the intersection points, often referred to as t1 and t2. These points denote where the ray enters and exits the sphere. It was crucial to ensure these points were within the ray's valid range, allowing for accurate intersection detection. In cases where the ray originates inside the sphere, we adjusted the intersection point to the closest exit point. This process refined our understanding of spatial relationships within 3D rendering, where the ray's interaction with the sphere directly influenced the visual outcome on the screen.
-					</p>
+            <p>
+                In Task 1 of Part 2, we focused on constructing a Bounding Volume Hierarchy (BVH) to optimize the rendering process. We started by defining a bounding box (BBox) that would encompass all the primitives in the scene. We iterated through each primitive to calculate the combined bounding box and the average centroid, which helped in determining where to split the set of primitives.
+            </p>
 
-					<p>
-						In summary, the sphere intersection implementation consisted of calculating the ray's potential entry and exit points on the sphere's surface and determining the closest point to the ray's origin. This precise calculation allowed for correctly rendering the sphere's surface, capturing its curvatures and how light interacts in a 3D space.
-					</p>
+            <p>
+                Initially, we checked if the number of primitives was small enough to fit into a leaf node. If it was, we directly assigned the range of primitives to that node, making it a leaf in the BVH tree. Otherwise, we proceeded with the general case of building the hierarchy.
+            </p>
 
-					<div style="text-align:center;">
-						<figure>
-							<img src="../hw3/images/part1_task4 .png" alt="Task 3 - CBempty" style="width:50%; margin:auto;">
-							<figcaption>Figure 2. Part 1 - Task 4 - CBspheres Lambertian</figcaption>
-						</figure>
-					</div>
+            <div class="w3-panel w3-leftbar w3-light-grey">
 
+                <h3 id="part-3-area-weighted-vertex-normals">
+                    <span style="font-size: smaller;">
+                        How did we choose the split point?
+                    </span>
+                </h3>
+
+                <p>We used the centroid of the primitives to decide the split position along either the x-axis, y-axis, or z-axis. We chose whichever of these three axes provided the best balance balance of primitives across the nodes. For example, if there were 5 primitives, and we split them along the x-axis resulting in 4 primitives on the left and 1 on the right. But if we tried splitting along the y-axis and ended up with 3 primitives on the top and 2 on the bottom, then we would choose the y-axis. This method of splitting with the option of three axes made the rendering process much faster. It even resulted in a rendering process that was 7 times quicker compared to just splitting along the x-axis.</p>
+
+            </div>
+
+            <p>
+                Finally, we recursively constructed BVH nodes for the left and right groups of primitives, building a tree structure that would streamline the ray-primitive intersection tests in the rendering pipeline. This method significantly reduced the number of intersection checks needed, thereby enhancing the rendering performance.
+            </p>
+
+            <div style="text-align:center; background: none; filter: none;">
+                <figure>
+                    <img src="images/part_2/bvh.jpg" alt="BVH Illustration" style="width:70%; margin:auto;">
+                    <figcaption>BVH Illustration</figcaption>
+                </figure>
+            </div>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 2.2: Intersecting the Bounding Box</h3>
+            <p>
+                In task 2 of part 2, we needed to determine whether a ray intersects with a bounding box. We started by defining temporary variables to hold the intersection times for the x, y, and z planes of the box. Our approach was to calculate the points where the ray would intersect the minimum and maximum bounds of these planes.
+            </p>
+
+            <p>
+                First, we computed the intersection times tmin and tmax for the x planes of the bounding box, using the ray's origin and direction to determine how it intersects with the box's sides. We then ensured that tmin was always less than tmax by swapping them if necessary. We repeated this process for the y and z planes, calculating tymin, tymax, tzmin, and tzmax. Next, we checked for actual intersections between these planes. If the ray's intersection times for one axis didn't overlap with those of another, we concluded that there was no intersection and returned false.
+            </p>
+
+            <p>
+                However, if there was an overlap, we updated tmin and tmax to reflect the intersection with the y and z planes. This meant considering the larger of the tmin values and the smaller of the tmax values to find the valid intersection range along the ray's path. Finally, if all these conditions were met, it indicated that the ray indeed intersected with the bounding box. We updated t0 and t1 with the final tmin and tmax values, marking the points where the ray enters and exits the box, proving the intersection's occurrence.
+            </p>
+
+
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 2.3: Intersecting the BVH</h3>
+
+            <p>
+                We started by verifying if the ray intersected the bounding box of the current node. If it didn't, we immediately returned false since it meant there was no need to check further. In cases where the bounding box was hit, we ensured that the hit points lay within the valid range of the ray. If not, again, we returned false because it indicated the ray didn't actually intersect with the objects in the BVH node.
+            </p>
+            <p>
+                For BVHAccel::has_intersection(...), when dealing with a leaf node, things were straightforward. We checked for an intersection with all primitives contained within that node. As soon as we found an intersection, we stopped the search and returned true because the function didn't require the closest hit — just any hit would do. For non-leaf nodes, we recursively checked for intersections with both the left and right children nodes. We short-circuited the function to return true upon the first found intersection, thus potentially speeding up the rendering process as it eliminated unnecessary checks.
+            </p>
+
+            <p>
+                For BVHAccel::intersect(...), in leaf nodes, we looked for the nearest intersection by checking every primitive. If one was found, we updated the intersection data structure with the hit information. For non-leaf nodes, we performed a recursive search through the left and right children nodes for the closest hit. Unlike the has_intersection function, we couldn't return immediately upon finding any hit. Instead, we needed to find the closest hit, so we continued searching through all potential intersections. If we found a closer hit than what had been recorded, we updated the intersection information accordingly.
+            </p>
+
+            <div class="w3-panel w3-leftbar w3-light-grey">
+
+                <h3 id="part-3-area-weighted-vertex-normals">
+                    <span style="font-size: smaller;">
+                        Why can we return true after a single intersection on BVHAccel::has_intersection?
+                    </span>
+                </h3>
+
+                <p>The reason why BVHAccel::has_intersection(...) can return true after a single intersection is that its purpose is only to determine whether the ray hits any object in the scene, which is sufficient for certain calculations like shadow rays where knowing the presence of an obstacle along the light path to the light source is the only requirement. On the other hand, BVHAccel::intersect(...) needs to find the closest intersection to accurately portray how light interacts with objects, affecting visual details such as color, texture, and the play of light and shadow. It necessitates examining every potential intersection point along the ray within each intersected bounding box to establish the nearest contact point, ensuring that the rendered image accurately reflects the scene's geometry and lighting conditions.</p>
+
+            </div>
+
+
+            <div class="w3-panel w3-leftbar w3-light-grey">
+
+                <h3 id="part-3-area-weighted-vertex-normals">
+                    <span style="font-size: smaller;">
+                        Why don't we need to keep updating BVH when i and r.max_t update correctly in their own function?
+                    </span>
+                </h3>
+
+                <p>When each primitive in a scene handles its own intersection checks and updates the intersection information ('i') and the maximum distance ('r.max_t') to the closest intersection point directly, it ensures that the most accurate and up-to-date data is used whenever an intersection is found. As rays move through the BVH structure and hit primitives, each one updates its own hit information, and we'll always know the nearest object hit first up to that point. This speeds up the process by preventing unnecessary calculations. It also keeps the intersection data constant and optimized as we check for closer intersections deeper in the BVH trees.</p>
+
+            </div>
+
+            <div class="w3-panel w3-leftbar w3-light-grey">
+
+                <h3 id="part-3-area-weighted-vertex-normals">
+                    <span style="font-size: smaller;">
+                        Why does BVH acceleration speed up the rendering process?
+                    </span>
+                </h3>
+
+                <p>The BVH acceleration technique speeds up rendering by organizing objects into a tree structure, which allows the path tracer to quickly disregard large groups of objects that a ray does not intersect. In Task 2, without BVH acceleration, each ray must check every single object for intersections, which is time-consuming, especially with thousands of objects. However, Task 3 introduces BVH acceleration, which reduces these unnecessary checks by 1/2 for an ideal BVH. Now, rays only need to check objects within bounding boxes they intersect. This process significantly cuts down the number of calculations needed, as rays bypass large sections of the scene without superfluous intersection tests, reducing the ray intersection complexity to O(log(n)) from O(n) originally.</p>
+            </div>
+
+            <p>Here are some images for some large <i>.dae</i> files using normal shading for color. These files had on the order of tens of thousands of primitives. As such, they initially had extremely high render times, but this was cut down ~700x after adding BVH acceleration.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_2/dragon_hr.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>dragon.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_2/wall_e_hr.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>wall-e.dae</figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_2/beast_hr.png" alt="beast.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>beast.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_2/CBlucy_hr.png" alt="CBlucy.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>CBlucy.dae</figcaption>
+                </figure>
+            </div>
+
+            <p>Below is a table comparing rendering performance before and after adding BVH acceleration for several scenes.</p>
+            <table class="styled-table">
+                <tbody>
+                    <tr>
+                        <th>File</th>
+                        <th># Primitives</th>
+                        <th>Render Time Before (s)</th>
+                        <th>Render Time After (s)</th>
+                    </tr>
+                    <tr>
+                        <td><code>wall-e.dae</code></td>
+                        <td>240,326</td>
+                        <td>469.5570</td>
+                        <td>0.1219</td>
+                    </tr>
+                    <tr>
+                        <td><code>CBlucy.dae</code></td>
+                        <td>133,796</td>
+                        <td>188.5124</td>
+                        <td>0.2874</td>
+                    </tr>
+                    <tr>
+                        <td><code>dragon.dae</code></td>
+                        <td>105,120</td>
+                        <td>124.6700</td>
+                        <td>0.2074</td>
+                    </tr>
+                    <tr>
+                        <td><code>beast.dae</code></td>
+                        <td>64,618</td>
+                        <td>65.0017</td>
+                        <td>0.1099</td>
+                    </tr>
+                    <tr>
+                        <td><code>cow.dae</code></td>
+                        <td>5,856</td>
+                        <td>4.1820</td>
+                        <td>0.0458</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                These results illustrate how BVH can accelerate rendering times greatly, ranging from 100x to 3800x for a file with extremely complex geometry like wall-e.dae, by optimizing the ray intersection process. This shows the power of BVH acceleration and how it is able to turn a linear time algorithm logarithmic by allowing for nearly half of the scene objects to be skipped at every iteration. Some interesting things to note are that more dense scenes do not always correspond to greater runtime when using BVH - while containing nearly 2x the number of primitives, wall-e.dae takes less than half the time of CBlucy.dae to render. This poorer performance on CBlucy suggests that the naive heuristic of splitting by using the centroid is not always optimal, and its effectiveness depends on the layout of primitives in the scene. Another important finding is that with fewer objects in the scene, a smaller speedup is gained over the naive version, as seen through cow.dae only getting a 100x speedup, and likely with just around 10-15 objects, BVH would give no acceleration as a linear scan would be more efficient. Although there is a small overhead in constructing the BVH tree, this construction step is negligible when compared to the rendering times of the larger files.
+            </p>
+        </div>
+
+
+        <br>
+
+
+        <div class="w3-container" id="part3">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 10px; font-weight: bold; max-width: 60%; display: inline-block; color: black; ">
+                <span>PART 3 : Direct Illumination</span>
+            </div>
+
+            <p>
+                In this part, we used two direct lighting techniques to simulate realistic lighting. Initially, we started with a basic diffuse BSDF, reflecting light uniformly across all directions, and moved to zero-bounce illumination for direct light without reflection. We then progressed to uniform hemisphere sampling, which produced noisy images due to its non-discriminatory approach to light directions. We then shifted to importance sampling, which sampled light based on the likelihood of it affecting the scene, focusing on significant contributions from light sources. This method reduced noise and rendered scenes with point lights more realistically, as it considered the intensity and direction of light, making it better than uniform sampling for depicting light and material.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 3.1: Diffuse BSDF</h3>
+
+            <p>
+                We implemented the diffuse BSDF for rendering diffuse materials by creating functions to simulate light reflection. The DiffuseBSDF::f function assumed uniform light scattering, simplifying the reflectance calculation as a constant over the hemisphere. For the DiffuseBSDF::sample_f function, we sampled new incoming light directions to compute the BSDF, essential for realistic light interaction. While f computed the BSDF based on the specific incoming and outgoing directions, sample_f was responsible for generating a new incoming direction and evaluating its contribution to the final appearance of the material. These functions formed the foundation for more intricate light interaction calculations that would come later in the project.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 3.2: Zero-bounce Illumination</h3>
+
+            <p>
+                For this part, we implemented a function called zero_bounce_radiance, which captured the light that hit the camera directly without bouncing off other surfaces. In the function, we returned the emission value from the BSDF of the intersected object. This emission is the color we see from an object when it's directly illuminated. Since we are not considering any bounces of light, this function only needs to return the light that comes straight from the light source to the camera. The get_emission() function provided the necessary light intensity without further complexity. When we called this function in the path tracer, it effectively calculated the direct illumination for the scene, adding to the realism of the rendered image.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 3.3: Direct Lighting with Uniform Hemisphere Sampling</h3>
+
+            <p>
+                In this task, we focused on implementing uniform hemisphere sampling to estimate direct lighting. This process involves simulating how light arrives at a specific point and determines the visual outcome of the scene. First, we initialized the probability density function (PDF) which in this case was constant due to the uniformity of the sampling across the hemisphere. Then, we did a loop to generate random vectors that represent potential light directions, reflecting the idea that light could arrive from any point on the hemisphere.
+            </p>
+
+            <p>
+                With each vector, we created a new ray originating from the intersection point and checked if it intersected with a light source in the scene using a BVH acceleration structure. For those rays that did hit a light source, we calculated the reflected light contributing to the pixel's color by calling the BSDF function, accounting for both the emission of the light source and the surface's reflective properties. We repeated this process for a predefined number of samples to approximate the overall light arriving at the point.
+            </p>
+
+            <p>
+                After summing up all the contributions, we normalized the final radiance by the number of samples to average out the illumination. This approach allowed us to simulate direct lighting effects efficiently, giving a basic yet effective representation of how light interacts with surfaces for the rendered images.
+            </p>
+
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 3.4: Direct Lighting by Importance Sampling</h3>
+
+            <p>
+                Importance sampling is a method that enhances the realism of rendered images. Initially, our attempts at using uniform sampling across a hemisphere had produced a bit noisy images. This noise was due to the randomness of light directions -- if you sample a random ray directly from a hit point, the chance that it intersects a light source is quite low, meaning the light source gives 0 contribution for that sample. However, importance sampling aimed to address this by sampling from the areas with more contribution - the light sources themselves.
+            </p>
+
+            <p>
+                To implement this, we first determined the amount of light directly coming from each light source in the scene. We only needed one sample for point lights, as their contribution would be uniform. We then looped through each light, sampling directions from the light to the hit point on the object. If nothing was blocking the path, that light source indeed affected the hit point.
+            </p>
+
+            <p>
+                For each valid light sample, we calculated its contribution to the scene. This involved a bidirectional reflectance distribution function (BSDF) which considered the surface's material properties and how they interacted with the light. We summed these contributions to find the total direct lighting. By sampling directly from the light sources, the process significantly reduced noise, providing a clearer and more accurate representation of the scene. This was crucial for rendering images that only contained point lights, ensuring that the lighting appeared natural and convincing.
+            </p>
+
+            <p>Below are some images comparing uniform and importance sampling for CBbunny and CBspheres using <code>-s 64 -l 32</code>:</p>
+
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/uniform/bunny_64_l32_m1_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Uniform Sampling: CBbunny.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/importance/bunny_64_l32_m1_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Importance Sampling: CBbunny.dae</figcaption>
+                </figure>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/uniform/spheres_lambertian_64_l32_m1_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Uniform Sampling: CBspheres.dae</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/importance/spheres_lambertian_64_l32_m1_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Importance Sampling: CBspheres.dae</figcaption>
+                </figure>
+            </div>
+
+            <div class="w3-panel w3-leftbar w3-light-grey">
+
+                <h3 id="part-3-area-weighted-vertex-normals">
+                    <span style="font-size: smaller;">
+                        Analysis of Comparison between Uniform Sampling and Importance Sampling Results
+                    </span>
+                </h3>
+
+                <p>By looking at the bunny images above, the difference is clear. The one using uniform sampling shows a significant amount of noise, even with 64 samples per pixel, evidenced by the grainy appearance of the scenes. This occurs because light directions are randomly sampled across the hemisphere, meaning many samples may not contribute effectively to the scene's illumination, requiring more samples for a clean image. In contrast, the importance sampling images are  smoother and more refined. The noise is reduced because this technique focuses on the areas where light significantly influences the scene, hence requiring fewer samples to achieve a realistic image. The bunny and spheres with importance sampling, even at a lower sample rate, will show a render that is still acceptable, indicating the efficiency and quality improvement with importance sampling.</p>
+
+            </div>
+
+            <br>
+            <p>
+                Here we further investigate the amount of noise in importance sampling. Below are some Bunny images rendered with 1, 4, 16, and 64 light rays with 1 sample per pixel using light sampling. With just one light ray per pixel, the image is quite noisy, showing a lot of graininess, which is because there's not enough light information to accurately depict the bunny and the surrounding area. As we increase to four light rays per pixel, the image is still noisy but shows some improvement as more light data provides a better sense of the bunny's shape and the shadows it casts.
+            </p>
+
+            <p>
+                With 16 light rays per pixel, the noise reduces pretty significantly, and we start to see a clearer image with more defined shadows and highlights. By the time we reach 64 light rays per pixel, the image has much less noise and looks smoother. The lighting appears more consistent and natural, providing a much more realistic rendering of the bunny. This progression illustrates the importance of using a higher number of light samples for creating a clean and detailed visual representation in 3D rendering.
+            </p>
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/light_comparison/bunny_s1_l1_m1_o1.png" alt="Task 3 - CBempty" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny - light ray 1</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/light_comparison/bunny_s1_l4_m1_o1.png" alt="Task 3 - CBempty" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny - light ray 4</figcaption>
+                </figure>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/light_comparison/bunny_s1_l16_m1_o1.png" alt="Task 3 - CBempty" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny - light ray 16</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_3/light_comparison/bunny_s1_l64_m1_o1.png" alt="Task 3 - CBempty" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny - light ray 64</figcaption>
+                </figure>
+            </div>
+
+            <br>
+  
+
+        </div>
+
+
+        <br>
+
+
+        <div class="w3-container" id="part4">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 0px; font-weight: bold; max-width: 60%; display: inline-block; color: black; ">
+                <span>PART 4 : Global Illumination</span>
+            </div>
+
+            <p>
+                For a better and more realistic rendering, we combined the method of indirect lighting functions, N bounces of light with the Russian Roulette technique. While the N bounces technique follows light rays across multiple reflections, ensuring comprehensive coverage of light's interaction within the scene, Russian Roulette introduces a probabilistic cutoff to give an unbiased estimate and also help reduce computational load. Russian Roulette incorporates a random decision at each potential bounce, whether to continue tracing or to terminate.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 4.1: Sampling with Diffuse BSDF</h3>
+
+            <p>
+                In this part, we applied the same code from Part 3 Task 1  for the DiffuseBSDF::sample_f function. This function, integral to rendering diffuse materials, required sampling both incoming and outgoing light rays to determine how light scatters across a surface. The approach remained unchanged from the previous task, because that light reflects off surfaces uniformly in all directions of the hemisphere.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 4.2: Global Illumination with up to N Bounces of Light</h3>
+
+            <p>
+                For this part, our focus shifted to the indirect light that bounces from surface to surface before reaching our eyes. We implemented a recursive strategy to capture up to N bounces of light. Starting with the first bounce, we utilized a function that estimated the radiance by considering the BSDF and the light's incoming direction. This is the start of a ray of light that could potentially bounce multiple times, picking up subtle color and intensity changes along its path. This recursive algorithm starts by calculating the light from a single bounce off a light source, computes a random sample of a direction based on the hit point's BSDF, traces a ray in that sample direction, and calls itself recursively on this new hit point to calculate the irradiance here to find its contribution to the original hit point.
+            </p>
+
+            <!-- <p>
+                At each bounce, we need to decide whthere this light path will contribute significantly to the scene and worth to trace it further. We made these calls using a probability check, a form of computational efficiency ensuring we only pursued the paths that truly mattered to the final image. In the end, we accumulated the light interactions, the bounces that made more natural scene. This method helped us made sure our picture didn't look flat or too bright.
+            </p> -->
+
+            <h3 id="part-3-area-weighted-vertex-normals">Task 4.3: Global Illumination with Russian Roulette</h3>
+
+            <p>
+                Russian Roulette is known for managing the recursive tracing of light rays for global illumination. The goal of indirect lighting is to integrate over possible paths of all possible lengths but this is infeasible as it would require an infinite number of recursive iterations. If we terminate our recursion at some depth N, the estimate would be biased since it does not include ray paths of length > N. As such, we use Russian Roulette to reweight the contribution of longer paths and give us an unbiased estimate in a computationally feasible manner.
+            </p>
+            <p>
+                At each stage of recursion, we decided whether to continue tracing a light path. This decision wasn't based on a strict rule but was instead made randomly with a set termination probability, which we defined as <code>TERM_PROB</code>. By using a coin flip method with the flip's outcome influenced by our predefined continuation probability <code>cpdf = 1 - TERM_PROB</code>, we randomly determined whether to follow a light path further. If the virtual coin came up heads, we proceeded, calculating the light's next bounce and adding it, scaled by a factor of <code>1/TERM_PROB</code>, to our cumulative radiance. If tails, we stopped, and that path's contribution ended.
+            </p>
+            <br>
+
+            <p>Here are some images rendered with global (direct & indirect) illumination. They are run using <code>-s 1024 -l 4 -m 5.</code></p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m5_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>(CBbunny.dae)</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s1024_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>(CBspheres.dae)</figcaption>
+                </figure>
+            </div>
+            <br>
+
+            <p>For CBbunny.dae, we next rendered views using Russian Roulette with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). We used 1024 samples per pixel and 4 samples per area light.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m0_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 0 </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m1_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 1 </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m2_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 2 </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m3_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 3 </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m4_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 4 </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/russian/bunny_s1024_l4_m100_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>max_ray_depth = 100 </figcaption>
+                </figure>
+            </div>
+
+            <p>
+                The biggest changes occur in going from <code>m=0</code> (which is zero-bounce lighting) to <code>m=1</code> (one-bounce lighting), as this adds light to areas which are not the light source, and going from <code>m=1</code> to <code>m=2</code>, as this adds the majority of the indirect lighting that will appear. After 1 or 2 more bounces, the scene has essentially converged, and the only discernable changes are the scene becoming slightly brighter. By <code>m=4</code>, ambient color bleeding from the walls is quite good, and <code>m=100</code> does not change much. Using a smaller m also gives better results because using Russian Roulette gives us an unbiased estimate of ray termination. 
+            </p>
+            <br>
+
+            <p>Here we compare rendered views with different sample-per-pixel rates ranging from 1 to 1024 on CBspheres.dae. We use <code>-m 5 -l 4</code>.</p>
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s1_l4_m5_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>1 sample per pixel </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s2_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>2 samples per pixel </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s4_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>4 samples per pixel </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s8_l4_m5_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>8 samples per pixel </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s16_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>16 samples per pixel </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s64_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>64 samples per pixel </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/sample_per_pixel/spheres_s1024_l4_m5_o1.png" alt="dragon.png" style="width: 33%; max-width: 400px;">
+                    <figcaption>1024 samples per pixel </figcaption>
+                </figure>
+            </div>
+
+            <p>
+                There is significant visible noise with sample rates below 64. This illustrates how we need enough samples to get a good enough estimate of the irradiance when using Monte Carlo sampling due to the inherent randomness. At <code>s=64</code>, we get a somewhat noise-free image, and at <code>s=1024</code>, the image is very clean and noise-free.
+            </p>
+            <br>
+
+            <p>Here are some pictures comparing the lighting from only direct illumination with only indirect illumination on the CBspheres.dae scene. They are run using <code>-s 1024 -l 4 -m 5</code>. Indirect illumination adds light to areas of the scene that can only be lit by light bouncing, such as the ceiling and undersides of the spheres.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/dir_vs_indir/spheres_dir_s1024_l4_m5_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Only direct illumination (CBspheres.dae)</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/dir_vs_indir/spheres_indir_s1024_l4_m5_o1.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Only indirect illumination (CBspheres.dae)</figcaption>
+                </figure>
+            </div>
+
+            <br>
+
+            <p>Finally, we perform experiments to better illustrate the effect of adding the contribution by the mth bounce of light on CBbunny.dae. We compare images with <code>isAccumBounces</code> set to true and false, where false only displays the light at the max_ray_depth bounce while true sums up all light along the path up to max_ray_depth. We use <code>-s 1024 -l 4</code>. These images mirror the effects of additional bounces of light in the Russian Roulette images.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m0_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 0,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m0_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 0,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m1_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 1,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m1_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 1,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m2_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 2,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m2_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 2,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m3_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 3,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m3_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 3,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m4_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 4,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m4_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 4,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m5_o0.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 5,isAccumBounces = false </figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_4/cbunny_mth_bounce/bunny_s1024_l4_m5_o1.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>m = 5,isAccumBounces = true </figcaption>
+                </figure>
+            </div>
+
+            <br>
+        </div>
+
+        <div class="w3-container" id="part5">
+            <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 0px; font-weight: bold; max-width: 60%; display: inline-block; color: black; ">
+                <span>PART 5 : Adaptive Sampling</span>
+            </div>
+
+            <p>
+                Adaptive sampling is a technique in path tracing that improves rendering efficiency by adjusting the number of samples per pixel according to need. In path tracing, sometimes we give the same number of samples to every pixel, but this is often not efficient because some pixels need fewer samples for convergence while others need more.
+            </p>
+
+            <p>
+                The basic idea of adaptive sampling is to check if a pixel has converged enough after a certain number of samples. To do this, we calculate the mean and variance from the already computed sample colors. With these values, we can calculate a confidence interval to determine if the pixel has converged with 95% confidence. If the pixel hasn't converged, we continue sampling.
+            </p>
+
+            <p>
+                By using adaptive sampling, we focus only on areas that truly need additional samples, which helps reduce rendering time and computational resources without sacrificing the quality of the resulting image. This is especially useful for complex scenes with high variation in detail and noise.
+            </p>
+
+            <h3 id="part-3-area-weighted-vertex-normals">Our Implementation</h3>
+
+            <p>
+                We started by determining the mean and variance for each pixel, tracking the accumulated radiance with every new ray sampled. The adaptive algorithm will start its role after more than one sample per pixel has been gathered, checking whether additional sampling is necessary. Using the statistical measure <code>I</code>, we compared it against a maximum tolerance multiplied by the mean to decide if the pixel's radiance had settled. 
+            </p>
+
+            <p>
+                When <code>I</code> fell below this threshold, it indicated that the pixel had sufficiently converged. At this stage, we could stop taking more samples for that pixel, thereby using our computational power more efficiently. The loop broke early for pixels that met the convergence criteria, leading to a reduction in unnecessary calculations. Furthermore, as checking for convergence at every sample is costly, we only do this check every <code>samplesPerBatch</code> pixels (which is 32 by default), until we reach the max allowed samples.
+            </p>
+
+            <p>
+                The result was a more efficient rendering process. We got better images while preventing over-sampling in areas that didn't require it. Through adaptive sampling, our renders remain accurate and natural, all while optimizing the computational workload.
+            </p>
+
+            <p>Here are some bunny and spheres pictures rendered using 2048 samples per pixel, 1 sample per light, and 5 for max ray depth.</p>
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_5/bunny.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny Adaptive</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_5/bunny_rate.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Bunny Adaptive Rate</figcaption>
+                </figure>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; background: none; filter: none;">
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_5/spheres_adaptive.png" alt="dragon.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Spheres Adaptive</figcaption>
+                </figure>
+                <figure style="flex: 1; text-align: center; margin: 0;">
+                    <img src="images/part_5/spheres_adaptive_rate.png" alt="wall-e.png" style="width: 100%; max-width: 400px;">
+                    <figcaption>Spheres Adaptive Rate</figcaption>
+                </figure>
+            </div>
+
+            <p>
+                The first images (Bunny Adaptive and Spheres Adaptive) of each pair show the final, noise-free rendered result after using at least 2048 samples per pixel. The renderings are smooth and detail-rich because enough samples have been taken to accurately capture the lighting and shading nuances of the scene.
+            </p>
+
+            <p>
+                The second set of images (Bunny Adaptive Rate and Spheres Adaptive Rate), known as the sample rate images, visually represents where more or fewer samples were necessary during rendering. In these heatmaps, red indicates areas where the maximum number of samples was used due to high variance, whereas blue shows areas where fewer samples sufficed, like the flat and uniformly colored surfaces. In particular, areas like a light source are sparsely sampled, since they always have a constant irradiance, while areas like shadowed sections require a significant number of samples, as it takes multiple bounces of light to reach it and this recursive ray-tracing is stochastic. These sample rate images illustrate how adaptive sampling is able to allocate more resources to complex parts of the image, improving efficiency by not oversampling in simpler regions. This ensures a noise-free image without wasting computational power.
+            </p>
+
+            <!-- End page content -->
+        </div>
+        <footer class="w3-center w3-light-grey w3-padding-48 w3-large">
+        </footer>
+
+        <script>
+            // Tabbed Menu
+            function openMenu(evt, menuName) {
+                var i, x, tablinks;
+                x = document.getElementsByClassName("menu");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablink");
+                for (i = 0; i < x.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" w3-dark-grey", "");
+                }
+                document.getElementById(menuName).style.display = "block";
+                evt.currentTarget.firstElementChild.className += " w3-dark-grey";
+            }
+            document.getElementById("myLink").click();
+        </script>
 
-					<h2 id="Section-2-Triangle-Meshes">Part 2: Bounding Volume Hierarchy</h2>
-					<div>
-						<h3 id="part-3-area-weighted-vertex-normals">Task 2.1: Constructing the BVH</h3>
-
-						<p>
-							In task 1 of part 2, we focused on constructing a Bounding Volume Hierarchy (BVH) to optimize the rendering process. We started by defining a bounding box (BBox) that would encompass all the primitives in the scene. We iterated through each primitive to calculate the combined bounding box and the average centroid, which helped in determining where to split the set of primitives.
-						</p>
-
-						<p>
-							Initially, we checked if the number of primitives was small enough to fit into a leaf node. If it was, we directly assigned the range of primitives to that node, making it a leaf in the BVH tree. Otherwise, we proceeded with the general case of building the hierarchy.
-						</p>
-
-						<h3 id="part-3-area-weighted-vertex-normals">
-							<span style="font-size: smaller;">
-								How did we choose the splitting point?
-							</span>
-						</h3>
-
-						<p>
-							We used the average centroid to decide the split position along either the x-axis, y-axis, or z-axis. We chose whichever of these three axes provided the best balance distribution for splitting the primitives. For example, there were 5 primitives, and we split them along the x-axis resulting in 4 primitives on the left and 1 on the right. But if we tried splitting along the y-axis and ended up with 3 primitives on the top and 2 on the bottom, then we would choose the y-axis. This method of splitting with the option of three axes made the rendering process much faster. It even resulted in a rendering process that was 7 times quicker.
-						</p>
-
-						<p>
-							Finally, we recursively constructed BVH nodes for the left and right groups of primitives, building a tree structure that would streamline the ray-primitive intersection tests in the rendering pipeline. This method significantly reduced the number of intersection checks needed, thereby enhancing the rendering performance.
-						</p>
-
-						<h3 id="part-3-area-weighted-vertex-normals">Task 2.2: Intersecting the Bounding Box</h3>
-						<p>
-							In task 2 of part 2, we needed to determine whether a ray intersects with a bounding box. We started by defining temporary variables to hold the intersection times for the x, y, and z planes of the box. Our approach was to calculate the points where the ray would intersect the minimum and maximum bounds of these planes.
-						</p>
-
-						<p>
-							First, we computed the intersection times tmin and tmax for the x planes of the bounding box, using the ray's origin and direction to determine how it intersects with the box's sides. We then ensured that tmin was always less than tmax by swapping them if necessary. We repeated this process for the y and z planes, calculating tymin, tymax, tzmin, and tzmax. Next, we checked for actual intersections between these planes. If the ray's intersection times for one axis didn't overlap with those of another, we concluded that there was no intersection and returned false.
-						</p>
-
-						<p>
-							However, if there was an overlap, we updated tmin and tmax to reflect the intersection with the y and z planes. This meant considering the larger of the tmin values and the smaller of the tmax values to find the valid intersection range along the ray's path. Finally, if all these conditions were met, it indicated that the ray indeed intersected with the bounding box. We updated t0 and t1 with the final tmin and tmax values, marking the points where the ray enters and exits the box, proving the intersection's occurrence.
-						</p>
-
-
-
-						<h3 id="part-3-area-weighted-vertex-normals">Task 2.3: Intersecting the BVH</h3>
-
-						<p>
-							We started by verifying if the ray intersected the bounding box of the current node. If it didn't, we immediately returned false since it meant there was no need to check further. In cases where the bounding box was hit, we ensured that the hit points lay within the valid range of the ray. If not, again, we returned false because it indicated the ray didn't actually intersect with the objects in the BVH node. However, if we were dealing with a leaf node, things were straightforward. We checked for an intersection with all primitives contained within that node. As soon as we found an intersection, we stopped the search and returned true because the function didn't require the closest hit—just any hit would do.
-						</p>
-
-						<p>
-							For non-leaf nodes, we recursively checked for intersections with both the left and right children nodes. We short-circuited the function to return true upon the first found intersection, thus potentially speeding up the rendering process as it eliminated unnecessary checks. Within leaf nodes, we looked for the nearest intersection by checking every primitive. If one was found, we updated the intersection data structure with the hit information. For non-leaf nodes, we performed a recursive search through the left and right children nodes for the closest hit. Unlike the has_intersection function, we couldn't return immediately upon finding any hit. Instead, we needed to find the closest hit, so we continued searching through all potential intersections. If we found a closer hit than what had been recorded, we updated the intersection information accordingly.
-						</p>
-
-
-
-						<h3 id="part-3-area-weighted-vertex-normals">
-							<span style="font-size: smaller;">
-								Why can we return true after a single intersection on BVHAccel::has_intersection?
-							</span>
-						</h3>
-
-						<p>
-							The reason why BVHAccel::has_intersection(...) can return true after a single intersection is because its purpose is only to determine whether the ray hits any object in the scene, which is sufficient for certain calculations like shadow rays where knowing the presence of an obstacle along the light path to the light source is the only requirement. On the other hand, BVHAccel::intersect(...) needs to find the closest intersection to accurately portray how light interacts with objects, affecting visual details such as color, texture, and the play of light and shadow. It necessitates examining every potential intersection point along the ray within each intersected bounding box to establish the nearest contact point, ensuring that the rendered image accurately reflects the scene's geometry and lighting conditions.
-
-							<h3 id="part-3-area-weighted-vertex-normals">
-								<span style="font-size: smaller;">
-									Why don't we need to keep updating BVH when i and r.max_t update correctly in their own function?
-								</span>
-							</h3>
-
-
-						<p>
-							When each primitive in a scene handles its own intersection checks and updates the intersection information ('i') and the maximum distance ('r.max_t') to the closest intersection point directly, it ensures that the most accurate and up-to-date data is used whenever an intersection is found. As rays move through the BVH structure and hit primitives, eachone updates its own hit information, and we'll always know the nearest object hit first up to that point. This speeds up the process by preventing unnecessary calculations. It also keeps the intersection data constant and optimized as we check for closer intersections deeper in the BVH trees.
-						</p>
-
-						<h3 id="part-3-area-weighted-vertex-normals">
-							<span style="font-size: smaller;">
-								Why does BVH acceleration speed up the rendering process?
-							</span>
-						</h3>
-
-						<p>
-							The BVH acceleration technique speeds up rendering by organizing objects into a tree structure, which allows the path tracer to quickly disregard large groups of objects that a ray does not intersect. In Task 2, without BVH acceleration, each ray must check every single object for intersections, which is time-consuming, especially with many objects. However, Task 3 introduces BVH acceleration, which reduces these unnecessary checks. Now, rays only need to check objects within bounding boxes they intersect. This process significantly cuts down the number of calculations needed, as rays bypass large sections of the scene without potential intersections, making the rendering process much faster and more efficient.
-						</p>
-
-						<h2 id="Section-2-Triangle-Meshes">Part 3: Direct Illumination</h2>
-						<div>
-
-							<p>
-								!!!!!!!!!!Direct lighting function consists of two types of methods: Uniform hemisphere sampling and Importance sampling lights. blablabla!!!!!!!!!!!!!!!
-							</p>
-
-							<h3 id="part-3-area-weighted-vertex-normals">Task 3.1: Diffuse BSDF</h3>
-
-							<p>
-								We implemented the diffuse BSDF for rendering diffuse materials by creating functions to simulate light reflection. The DiffuseBSDF::f function assumed uniform light scattering, simplifying the reflectance calculation as a constant over the hemisphere. For the DiffuseBSDF::sample_f function, we sampled new incoming light directions to compute the BSDF, essential for realistic light interaction. While f computed the BSDF based on the specific incoming and outgoing directions, sample_f was responsible for generating a new incoming direction and evaluating its contribution to the final appearance of the material. These functions formed the foundation for more intricate light interaction calculations that would come later in the project.
-							</p>
-
-							<h3 id="part-3-area-weighted-vertex-normals">Task 3.2: Zero-bounce Illumination</h3>
-
-							<p>
-								For this part, we implemented a function called zero_bounce_radiance, which captured the light that hit the camera directly without bouncing off other surfaces. In the function,we returned the emission value from the BSDF of the intersected object. This emission is the color we see from an object when it's directly illuminated. Since we are not considering any bounces of light, this function only needed to return the light that comes straight from the light source to the camera. The get_emission() function provided the necessary light intensity without further complexity. When we called this function in the path tracer, it effectively calculated the direct illumination for the scene, adding to the realism of the rendered image.
-							</p>
-
-							<h3 id="part-3-area-weighted-vertex-normals">Task 3.3: Direct Lighting with Unfirom Hemisphere Sampling</h3>
-
-							<p>
-
-								In this task, we focused on implementing uniform hemisphere sampling to estimate direct lighting. This process involved simulating how light arrives at a specific point and determines the visual outcome in the scene. First, we initialized the probability density function (PDF) which in this case was constant due to the uniformity of the sampling across the hemisphere. Then,  we did a loop to generate random vectors that represent potential light directions, reflecting the idea that light could arrive from any point on the hemisphere.
-							</p>
-
-							<p>
-								With each vector, we created a new ray originating from the intersection point and checked if it intersected with a light source in the scene using a BVH acceleration structure. For those rays that did hit a light source, I calculated the reflected light contributing to the pixel's color by calling the BSDF function, accounting for both the emission of the light source and the surface's reflective properties. We repeated this process for a predefined number of samples to approximate the overall light arriving at the point.
-							</p>
-							<p>
-								After summing up all the contributions, we normalized the final radiance by the number of samples to average out the illumination. This approach allowed us to simulate direct lighting effects efficiently, giving  a basic yet effective representation of how light interacts with surfaces for the rendered images.
-							</p>
-
-							<h3 id="part-3-area-weighted-vertex-normals">Task 3.4: Direct Lighting by Importance Sampling</h3>
-
-							
-
-							<h2 id="Section-2-Triangle-Meshes">Part 4: Global Illumination</h2>
-							<div>
-
-								<h3 id="part-3-area-weighted-vertex-normals">Task 4.1: Sampling with Diffuse BSDF</h3>
-
-								<p>
-									In this part, we applied the same code from Part 3 Task 1  for the DiffuseBSDF::sample_f function. This function, integral to rendering diffuse materials, required sampling both incoming and outgoing light rays to determine how light scatters across a surface. The approach remained unchanged from the previous task, because that light reflects off surfaces uniformly in all directions of the hemisphere.
-								</p>
-
-								<h3 id="part-3-area-weighted-vertex-normals">Task 4.2: Global Illumination with up to N Bounces of Light</h3>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-								<p>
-									Here I implemented area-weighted normal vectors at vertices for Phong shading, which gives much smoother surfaces than flat shading. To compute an area-weighted normal at a given vertex, I performed the following for each face (triangle) incident to the input vertex:
-									<ol>
-										<li>
-											Find the vertices of the current face
-											<script type="math/tex">(a,b,c)</script> where
-											<script type="math/tex">a</script> is the input vertex and
-											<script type="math/tex">c</script> is clockwise to
-											<script type="math/tex">b</script> by traversing around the face using the half-edge data structure.
-										</li>
-										<li>
-											Create two vectors
-											<script type="math/tex">v_{ba} = b - a</script> and
-											<script type="math/tex">v_{ca} = c - a</script> defining the edges of the triangle.
-										</li>
-										<li>
-											Compute the cross-product
-											<script type="math/tex">v_{ca}\times v_{ba}</script>. By definition, the cross-product of two vectors gives a vector perpendicular to them, so this is the face normal. The order is important so that the normal points in the correct direction. The cross-product of these vectors also has the nice geometric property of having a norm equal to twice the area of the triangle. Thus, this resultant vector from the cross-product is already weighted by its area.
-										</li>
-									</ol>
-									These area-weighted face normals are all summed, and this resulting vector is then normalized to get the final vertex normal.
-								</p>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_3/flat.jpg" style="width:100%" />
-										<p>Default flat shading using face normals</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_3/phong.jpg" style="width:100%" />
-										<p>Phong shading using vertex normals</p>
-									</div>
-								</div>
-
-								<p>The two shading styles -- face normals and vertex normals -- are depicted above for the teapot mesh. The vertex normals make the teapot visibly more smooth and round, which better mirrors the underlying geometry.</p>
-
-							</div>
-							<br>
-							<div>
-								<h3 id="part-4-edge-flip">Part 4: Edge Flip</h3>
-
-								<p>I implemented the edge flipping operation depicted below which flips the shared edge in a pair of triangles.<p>
-									<img src="./images/part_4/flip.jpg" style="width:100%" />
-
-								</p>This amounted to several careful pointer manipulations. I started by drawing the diagram and noting which changes this would cause to the mesh, trying to minimize the number of assignments. I found that none of the edges would need to be changed, and that of the vertices, only the two corresponding to the edge being flipped (<em>b</em> and <em>c</em>) would need to be modified.
-								</p>
-
-								<p>First, I got the pointers to all of the variables that would be involved in the assignment, as they would be changed during this operation. Since it would minimize any errors and keep the code cleaner, I set all of the pointers for all of the half-edges using the <code>Halfedge::setNeighbors(...)</code> method. Then, I assigned the half-edges for 2 the faces and the vertices <em>b</em> and <em>c</em>. </p>
-
-								<p>
-									One minor bug I ran into was that I did not initially account for the fact that <em>b</em> and <em>c</em> might start with half-edge <em>bc</em> or <em>cb</em>, in which case their half-edge pointer would need to be reassigned. This error was only found after flipping numerous edges since it is not always an issue.
-								</p>
-
-								<p>The images below illustrate the effect of edge flipping on two different meshes.</p>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_4/cube_orig.jpg" style="width:100%" />
-										<p>A cube</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_4/cube_flip.jpg" style="width:100%" />
-										<p>A cube after edge flips</p>
-									</div>
-								</div>
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_4/torus_orig.jpg" style="width:100%" />
-										<p>A torus</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_4/torus_flip.jpg" style="width:100%" />
-										<p>A torus after edge flips</p>
-									</div>
-								</div>
-
-							</div>
-							<br>
-							<div>
-								<h3 id="part-5-edge-split">Part 5: Edge Split</h3>
-
-								<p>I next implemented the edge split operation depicted below which splits the shared edge in a pair of triangles about its midpoint, inserting a new vertex m.<p>
-									<img src="./images/part_5/split.jpg" style="width:100%" />
-
-								<p>
-									This is similar to the previous edge flip operation in that it is another set of careful pointer manipulations, but this time more assignments are involved and new mesh elements are created -- namely 1 new vertex, 3 new edges, and 6 new half-edges. I took a similar approach as before in collecting all of the variables involved in the operation at the start and then systematically reassigning each type of mesh element (edges, vertices, faces, and half-edges). I luckily did not face any major bugs implementing this.
-								</p>
-
-								<p>Below are screenshots of the <code>cube.dae</code> mesh before and after a series of edge splits and edge flips.</p>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_5/cube.jpg" style="width:110%" />
-										<p>A cube</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_5/cube_split.jpg" style="width:110%" />
-										<p>A cube after some edge splits</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_5/cube_split_flip.jpg" style="width:110%" />
-										<p>A cube after many edge splits and flips</p>
-									</div>
-								</div>
-
-								<h4 id="extra-credit">Extra Credit: Boundary edge splits</h4>
-								<p>I also added support for edge splits at boundary edges. Unlike edge flips, edge splits can be applied to boundary edges, but only for the face that is non-boundary. To do this, we just need to determine the non-boundary half-edge and apply around half of the usual pointer reassignments. The effect of boundary edge splits can be seen below.</p>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_5/beetle_orig_boundary.jpg" style="width:100%" />
-										<p>Original <code>beetle.dae</code> boundary closeup</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_5/beetle_split_boundary.jpg" style="width:100%" />
-										<p><code>beetle.dae</code> after edge splits at boundary</p>
-									</div>
-								</div>
-
-							</div>
-							<br>
-							<div>
-								<h3 id="part-6-loop-subdivision">Part 6: Loop Subdivision for Mesh Upsampling</h3>
-
-								<p>Here I implement loop subdivision, a mesh upsampling method that subdivides each triangle into 4 smaller triangles and then updates the vertices of this subdivided mesh with a reweighting scheme.</p>
-								<img src="./images/part_6/subdivision.jpg" style="width:100%" />
-
-								<p>
-									I proceeded as suggested in the project spec by performing the following steps:
-									<ol>
-										<li>Compute the new positions for all existing vertices in the mesh using the loop subdivision reweighting scheme. All vertices are also marked to be part of the original mesh.</li>
-										<li>For each edge, compute the position of the new vertex that will be added, storing it in the <code>newPosition</code> field. Edges are also marked to be part of the original mesh.</li>
-										<li>Split all the edges in the original mesh. The tricky part here is that naively iterating from <code>mesh.edgesBegin()</code> to <code>mesh.edgesEnd()</code> causes an infinite loop as edges are being added to the end of the list of meshes at every split. Instead, I had to first determine the pointer to the last edge in the mesh, and iterate until it was reached. Additionally, <code>splitEdge</code> is modified to mark new mesh elements created as being new. The new vertices are assigned the position stored in their corresponding edge.</li>
-										<li>Flip any new edge that connects an old and new vertex.</li>
-										<li>Finally, the vertex positions computed in step 1 are copied over to the original vertices in the mesh.</li>
-									</ol>
-								</p>
-
-								<p>Performing all of the computations first is crucial to prevent bugs, as the mesh elements will be reassigned through all of the edge operations.</p>
-
-								<p>As loop subdivision repositions vertices by a weighted average of neighboring vertices, it creates a more uniform mesh at each iteration, rounding and smoothing out the overall mesh shape. However, sharp corners still tend to protrude out of the mesh and edges become somewhat beveled. Pre-splitting edges can help somewhat further smooth the mesh and reduce the sharpness of the protrusions, as can be seen in the icosahedron mesh below.</p>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_6/icos_1.jpg" style="width:100%" />
-										<p>Original <code>icosahedron.dae</code></p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/icos_2.jpg" style="width:100%" />
-										<p>4x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/icos_split.jpg" style="width:100%" />
-										<p>4x upsampling with pre-splitting of most edges</p>
-									</div>
-								</div>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_6/bean_1.jpg" style="width:100%" />
-										<p>Original <code>bean.dae</code></p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/bean_2.jpg" style="width:100%" />
-										<p>4x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/bean_3.jpg" style="width:100%" />
-										<p>16x upsampling</p>
-									</div>
-								</div>
-
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_6/torus_1.jpg" style="width:100%" />
-										<p>Original <code>torus.dae</code></p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/torus_2.jpg" style="width:100%" />
-										<p>4x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/torus_3.jpg" style="width:100%" />
-										<p>16x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/torus_4.jpg" style="width:100%" />
-										<p>64x upsampling</p>
-									</div>
-								</div>
-
-								<p>In the case of upsampling the cube, it is interesting that the cube becomes slightly asymmetric after repeated subdivisions even though it starts as a symmetric object. This is likely because the faces of the cube have only one diagonal edge, meaning the cube has few planes of symmetry. Because each step of the algorithm takes a weighted average of neighboring vertices to obtain the new vertex positions, neighboring vertices must have the same type of configuration (which is not the case in the default cube) to get a symmetric and uniform mesh at the end.</p>
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_a.jpg" style="width:100%" />
-										<p>Original <code>cube.dae</code></p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_a_1.jpg" style="width:100%" />
-										<p>4x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_a_2.jpg" style="width:100%" />
-										<p>16x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_a_3.jpg" style="width:100%" />
-										<p>64x upsampling</p>
-									</div>
-								</div>
-
-								<p>To remedy this, we can make all of the vertices rotationally equivalent to one another, creating more planes of symmetry, by pre-splitting some of the edges. This gives a much more symmetric mesh, as seen below.</p>
-								<div class="carousel-non-resize">
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube.jpg" style="width:100%" />
-										<p>Original <code>cube.dae</code> with the diagonal edges pre-split</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_1.jpg" style="width:100%" />
-										<p>4x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_2.jpg" style="width:100%" />
-										<p>16x upsampling</p>
-									</div>
-									<div class="carousel-col2">
-										<img src="./images/part_6/cube_3.jpg" style="width:100%" />
-										<p>64x upsampling</p>
-									</div>
-								</div>
-
-								<hr />
-							</div>
-							<br><br>
-
-						</div>
-					</div>
-	</div>
 </body>
-
 </html>
