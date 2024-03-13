@@ -97,6 +97,7 @@
         <h5 class="w3-center" style="font-size: 22px; padding-top: 1px; padding-bottom: 20px;"><span class="w3-tag w3-wide">CS 184/284A : Computer Graphics and Imaging</span></h5>
 
         <h5 class="w3-center" style="font-size: 20px; padding-top: 20px; padding-bottom: 20px;"><span class="w3-tag w3-wide">Aayush Gupta & Yulia Nugroho</span></h5>
+        <p class="w3-center"><a href="https://cal-cs184-student.github.io/hw-webpages-sp24-aayushg55/hw3/index.html">https://cal-cs184-student.github.io/hw-webpages-sp24-aayushg55/hw3/index.html</a><p>
 
         <div class="w3-container" id="overview">
             <div style="background-color: #F0E68C; text-align: left; font-size: 22px; padding: 20px; padding-top: 10px; padding-bottom: 10px; font-weight: bold; max-width: 40%; display: inline-block; color: black; ">
@@ -788,7 +789,7 @@
         <footer class="w3-center w3-light-grey w3-padding-48 w3-large">
         </footer>
 
-        <script>
+        <!-- <script>
             // Tabbed Menu
             function openMenu(evt, menuName) {
                 var i, x, tablinks;
@@ -804,7 +805,26 @@
                 evt.currentTarget.firstElementChild.className += " w3-dark-grey";
             }
             document.getElementById("myLink").click();
-        </script>
+        </script> -->
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Offset the scroll position when clicking on links
+                var links = document.querySelectorAll('a[href^="#"]');
+                links.forEach(function(link) {
+                    link.addEventListener("click", function(event) {
+                        event.preventDefault();
+                        var target = document.querySelector(this.getAttribute("href"));
+                        if (target) {
+                            var offset = target.offsetTop - 100;
+                            window.scrollTo({
+                                top: offset,
+                                behavior: "smooth"
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
 </body>
 </html>
